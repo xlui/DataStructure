@@ -1,17 +1,18 @@
 package me.xlui.list;
 
+import me.xlui.list.impl.CircularList;
+
 public class Main {
-	public static void main(String[] args) {
-		DoubleLinkedList doubleLinkedList = new DoubleLinkedList();
+	public static void main(String[] args) throws Exception {
+		CircularList list = new CircularList();
 
-		doubleLinkedList.add(1);
-		doubleLinkedList.add(2);
-		doubleLinkedList.add(-8);
-		doubleLinkedList.add(9);
-		doubleLinkedList.add(13);
+		list.insert(1);
+		list.insert(4);
+		list.insert(9);
+		list.insert(-10);
 
-		doubleLinkedList.access();
-		doubleLinkedList.remove(15);
-		doubleLinkedList.access();
+		list.remove(-10);
+
+		list.access();
 	}
 }

@@ -1,5 +1,7 @@
 package me.xlui.stack;
 
+import me.xlui.stack.impl.LinkedStack;
+
 public class Main {
 	public static void main(String[] args) throws Exception {
 		LinkedStack stack = new LinkedStack();

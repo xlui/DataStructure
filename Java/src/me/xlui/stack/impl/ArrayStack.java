@@ -1,4 +1,4 @@
-package me.xlui.stack;
+package me.xlui.stack.impl;
 
 public class ArrayStack {
 	private static final int DEFAULT_CAPACITY = 10;

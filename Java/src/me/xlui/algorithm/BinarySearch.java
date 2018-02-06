@@ -7,6 +7,7 @@ public class BinarySearch {
 	}
 
 	public static int binarySearch(int[] sequence, int n) {
+		// 二分查找，在一个有序序列中高效查找数据的算法
 		int low = 0, high = sequence.length - 1;
 		int mid;
 

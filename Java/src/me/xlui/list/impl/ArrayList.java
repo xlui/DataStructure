@@ -1,5 +1,8 @@
-package me.xlui.list;
+package me.xlui.list.impl;
 
+/**
+ * 数组实现的顺序表
+ */
 public class ArrayList {
 	private static final int DEFAULT_CAPACITY = 10;
 	private int size;
@@ -18,6 +21,10 @@ public class ArrayList {
 		return this.size == 0;
 	}
 
+	/**
+	 * 计算 ArrayList 中 var 的 index，如果没有 var 就返回 -1
+	 * 时间复杂度 O(N)
+	 */
 	public int indexOf(int var) {
 		for (int i = 0; i < this.size; i++) {
 			if (this.data[i] == var) {
@@ -27,10 +34,14 @@ public class ArrayList {
 		return -1;
 	}
 
+	/**
+	 * 插入操作，当数组空间不够时抛出异常
+	 */
 	public boolean insert(int position, int var) throws Exception {
 		if (this.size + 1 > DEFAULT_CAPACITY) {
 			throw new Exception("No enough space!");
 		}
+		// System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length);
 		System.arraycopy(this.data, position, this.data, position + 1, this.size - position);
 		this.data[position] = var;
 		++this.size;

@@ -1,4 +1,4 @@
-package me.xlui.stack;
+package me.xlui.stack.impl;
 
 public class LinkedStack {
 	private Node top;

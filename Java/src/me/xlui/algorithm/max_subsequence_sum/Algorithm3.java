@@ -1,5 +1,6 @@
 package me.xlui.algorithm.max_subsequence_sum;
 
+// 分治算法，将序列分为左右两个子序列，分别计算 左、右、中间 的子序列和，比较最大的并返回。
 public class Algorithm3 {
 	public static int maxSubSequenceSum(int[] sequence, int left, int right) {
 		int center;

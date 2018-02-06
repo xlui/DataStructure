@@ -1,4 +1,4 @@
-package me.xlui.list;
+package me.xlui.list.impl;
 
 public class DoubleLinkedList {
 	private int size = 0;
