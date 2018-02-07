@@ -35,7 +35,7 @@ public class ArrayStack {
 		return this.data[this.top--];
 	}
 
-	public int get() throws Exception {
+	public int peek() throws Exception {
 		if (this.top == -1) {
 			throw new Exception("Stack is empty!");
 		}

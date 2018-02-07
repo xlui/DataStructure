@@ -40,7 +40,7 @@ public class LinkedStack {
 		return top;
 	}
 
-	public int get() throws Exception {
+	public int peek() throws Exception {
 		if (this.top == null) {
 			throw new Exception("Stack is empty!");
 		}

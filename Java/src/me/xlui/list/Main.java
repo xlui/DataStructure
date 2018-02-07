@@ -11,7 +11,7 @@ public class Main {
 		list.insert(9);
 		list.insert(-10);
 
-		list.remove(-10);
+		System.out.println(list.hasCircle());
 
 		list.access();
 	}

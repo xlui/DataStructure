@@ -98,6 +98,28 @@ public class CircularList {
 		return false;
 	}
 
+	/**
+	 * 快慢指针判断链表中是否有环
+	 */
+	public boolean hasCircle() {
+		Node fast = this.head;
+		Node slow = this.head;
+
+		while (true) {
+			if (fast == null || fast.next == null) {
+				return false;
+			} else {
+				fast = fast.next.next;
+				slow = slow.next;
+			}
+
+			if (fast == slow || fast.next == slow) {
+				// 如果快慢指针相遇或者快指针跑到慢指针后边，说明有环
+				return true;
+			}
+		}
+	}
+
 	public void access() throws Exception {
 		if (this.head == null) {
 			throw new Exception("Circular list is empty!");
