@@ -1,6 +1,6 @@
 package me.xlui.list.impl;
 
-public class LinkedList {
+public class LinkedList<E> implements List<E> {
 	private int size = 0;
 	private Node head;
 
@@ -17,33 +17,59 @@ public class LinkedList {
 		return this.size == 0;
 	}
 
-	public void add(int element) {
+	@Override
+	public boolean add(E e) {
 		if (this.head == null) {
-			this.head = new Node(element);
+			this.head = new Node<>(e);
 			this.size++;
-			return;
+			return true;
 		}
 		Node tmp = this.head;
 		while (tmp.next != null) {
 			tmp = tmp.next;
 		}
-		tmp.next = new Node(element);
+		tmp.next = new Node<>(e);
 		++this.size;
+		return true;
 	}
 
-	public void add(int index, int element) {
+	@Override
+	public boolean remove(E e) {
+		if (this.head == null) {
+			this.head = null;
+			--this.size;
+			return true;
+		}
+		if (this.head.data.equals(e)) {
+			this.head = this.head.next;
+			--this.size;
+			return true;
+		}
+
+		Node node = this.head;
+		while (node.next != null && !node.next.data.equals(e)) {
+			node = node.next;
+		}
+		if (node.next != null) {
+			node.next = node.next.next;
+		}
+		--this.size;
+		return true;
+	}
+
+	public boolean add(int index, E element) {
 		if (index > size) {
 			throw new IllegalArgumentException("Invalid index!");
 		}
 
 		Node tmp = this.head;
-		Node newNode = new Node(element);
+		Node newNode = new Node<>(element);
 
 		if (index == 0) {
 			newNode.next = this.head;
 			this.head = newNode;
 			++this.size;
-			return;
+			return true;
 		}
 
 		for (int i = 1; i < index; i++) {
@@ -52,28 +78,7 @@ public class LinkedList {
 		newNode.next = tmp.next;
 		tmp.next = newNode;
 		this.size++;
-	}
-
-	public void remove(int element) {
-		if (this.head == null) {
-			this.head = null;
-			--this.size;
-			return;
-		}
-		if (this.head.data == element) {
-			this.head = this.head.next;
-			--this.size;
-			return;
-		}
-
-		Node node = this.head;
-		while (node.next != null && node.next.data != element) {
-			node = node.next;
-		}
-		if (node.next != null) {
-			node.next = node.next.next;
-		}
-		--this.size;
+		return true;
 	}
 
 	public void access() {
@@ -85,11 +90,11 @@ public class LinkedList {
 		System.out.println();
 	}
 
-	private static class Node {
-		int data;
+	private static class Node<E> {
+		E data;
 		Node next;
 
-		Node(int data) {
+		Node(E data) {
 			this.data = data;
 			this.next = null;
 		}

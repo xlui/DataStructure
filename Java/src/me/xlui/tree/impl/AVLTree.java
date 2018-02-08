@@ -32,8 +32,10 @@ public class AVLTree {
 				// 插入节点后，AVL 树失去平衡
 				if (height(node.left) - height(node.right) == 2) {
 					if (element < node.left.data) {
+						// 说明插入的位置是左儿子的左子节点，需要进行 LL 旋转
 						node = this.leftLeftRotation(node);
 					} else {
+						// 说明插入的位置是右儿子的右子节点，需要进行 LR 旋转
 						node = this.leftRightRotation(node);
 					}
 				}
@@ -41,14 +43,17 @@ public class AVLTree {
 				node.right = insert(node.right, element);
 				if (height(node.right) - height(node.left) == 2) {
 					if (element > node.right.data) {
+						// 说明插入位置是右儿子的右子节点，需要进行 RR 旋转
 						node = rightRightRotation(node);
 					} else {
+						// 说明插入位置是右儿子的左子节点，需要进行 RL 旋转
 						node = rightLeftRotation(node);
 					}
 				}
 			}
 			// 忽略相同结点
 		}
+		// 重新计算 height
 		node.height = Math.max(height(node.left), height(node.right)) + 1;
 		return node;
 	}
@@ -59,9 +64,10 @@ public class AVLTree {
 		}
 		if (element < node.data) {
 			node.left = this.remove(node.left, element);
-			// 删除左子树结点，如果导致 AVL 树失衡
+			// 删除左子树结点，可能导致 AVL 失衡。需要根据情况进行右旋
 			if (height(node.right) - height(node.left) == 2) {
 				if (height(node.right.left) > height(node.right.right)) {
+					// 这一层判断是为了选择要进行的旋转。如果 右子树的左子树的高度 高于 右子树的右子树的高度，则进行 RL 旋转
 					node = rightLeftRotation(node);
 				} else {
 					node = rightRightRotation(node);
@@ -69,8 +75,10 @@ public class AVLTree {
 			}
 		} else if (element > node.data) {
 			node.right = this.remove(node.right, element);
+			// 删除右子树结点，可能导致 AVL 失衡。需要根据情况进行左旋
 			if (height(node.left) - height(node.right) == 2) {
 				if (height(node.left.left) > height(node.left.right)) {
+					// 这一层判断是为了选择要进行的旋转。如果 左子树的左子树的高度 高于 左子树的右子树的高度，则进行 LL 旋转
 					node = leftLeftRotation(node);
 				} else {
 					node = leftRightRotation(node);

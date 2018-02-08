@@ -3,7 +3,7 @@ package me.xlui.list.impl;
 /**
  * 循环链表
  */
-public class CircularList {
+public class CircularList<E> implements List<E> {
 	private Node head;
 	private int size;
 
@@ -20,17 +20,18 @@ public class CircularList {
 		return this.size == 0;
 	}
 
-	public void insert(int element) {
+	@Override
+	public boolean add(E e) {
 		// 处理 head 为 null 的情况
 		if (this.head == null) {
-			this.head = new Node(element);
+			this.head = new Node<>(e);
 			this.head.next = this.head;
 			++this.size;
-			return;
+			return true;
 		}
 
 		Node tmp = this.head;
-		Node node = new Node(element);
+		Node node = new Node<>(e);
 		while (tmp.next != this.head) {
 			// 转到循环链表尾
 			tmp = tmp.next;
@@ -38,43 +39,17 @@ public class CircularList {
 		tmp.next = node;
 		node.next = this.head;
 		++this.size;
+		return true;
 	}
 
-	public void insert(int index, int element) throws Exception {
+	@Override
+	public boolean remove(E e) {
 		if (this.head == null) {
-			throw new Exception("Circular list is empty!");
+			return false;
 		}
 
 		Node tmp = this.head;
-		Node node = new Node(element);
-
-		if (index % size == 0) {
-			// 如果插入的 index 是 循环链表头
-			while (tmp.next != this.head)
-				tmp = tmp.next;
-			node.next = this.head;
-			tmp.next = node;
-			this.head = node;
-			++this.size;
-			return;
-		}
-
-		// 遍历到插入的位置前一个结点
-		for (int i = 1; i < index; i++) {
-			tmp = tmp.next;
-		}
-		node.next = tmp.next;
-		tmp.next = node;
-		++this.size;
-	}
-
-	public boolean remove(int element) throws Exception {
-		if (this.head == null) {
-			throw new Exception("Circular list is empty!");
-		}
-
-		Node tmp = this.head;
-		if (this.head.data == element) {
+		if (this.head.data.equals(e)) {
 			// 如果要删除头结点
 			while (tmp.next != this.head)
 				tmp = tmp.next;
@@ -84,11 +59,11 @@ public class CircularList {
 			return true;
 		}
 
-		while (tmp.next.data != element && tmp.next != this.head) {
+		while (!tmp.next.data.equals(e) && tmp.next != this.head) {
 			// 转移到要删除的结点的前一个结点
 			tmp = tmp.next;
 		}
-		if (tmp.next.data == element) {
+		if (tmp.next.data.equals(e)) {
 			// 排除结点不存在的情况
 			tmp.next = tmp.next.next;
 			--this.size;
@@ -96,6 +71,35 @@ public class CircularList {
 		}
 
 		return false;
+	}
+
+	public boolean insert(int index, E element) throws Exception {
+		if (this.head == null) {
+			throw new Exception("Circular list is empty!");
+		}
+
+		Node tmp = this.head;
+		Node node = new Node<>(element);
+
+		if (index % size == 0) {
+			// 如果插入的 index 是 循环链表头
+			while (tmp.next != this.head)
+				tmp = tmp.next;
+			node.next = this.head;
+			tmp.next = node;
+			this.head = node;
+			++this.size;
+			return true;
+		}
+
+		// 遍历到插入的位置前一个结点
+		for (int i = 1; i < index; i++) {
+			tmp = tmp.next;
+		}
+		node.next = tmp.next;
+		tmp.next = node;
+		++this.size;
+		return true;
 	}
 
 	/**
@@ -120,26 +124,22 @@ public class CircularList {
 		}
 	}
 
-	public void access() throws Exception {
-		if (this.head == null) {
-			throw new Exception("Circular list is empty!");
+	public void access() {
+		if (this.head != null) {
+			Node tmp = this.head;
+			do {
+				System.out.println(tmp.data + " ");
+				tmp = tmp.next;
+			} while (tmp != this.head);
+			System.out.println();
 		}
-
-		Node tmp = this.head;
-
-		do {
-			System.out.println(tmp.data + " ");
-			tmp = tmp.next;
-		} while (tmp != this.head);
-
-		System.out.println();
 	}
 
-	private static class Node {
-		private int data;
+	private static class Node<E> {
+		private E data;
 		private Node next;
 
-		public Node(int data) {
+		public Node(E data) {
 			this.data = data;
 			this.next = null;
 		}

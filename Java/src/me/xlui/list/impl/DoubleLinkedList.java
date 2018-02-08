@@ -1,6 +1,6 @@
 package me.xlui.list.impl;
 
-public class DoubleLinkedList {
+public class DoubleLinkedList<E> implements List<E> {
 	private int size = 0;
 	private Node list;
 
@@ -16,51 +16,29 @@ public class DoubleLinkedList {
 		return this.size == 0;
 	}
 
-	public void add(int element) {
+	@Override
+	public boolean add(E e) {
 		if (this.list == null) {
-			this.list = new Node(element);
+			this.list = new Node<>(e);
 			++this.size;
-			return;
+			return true;
 		}
 		Node node = this.list;
-		Node newNode = new Node(element);
+		Node newNode = new Node<>(e);
 		while (node.next != null) {
 			node = node.next;
 		}
 		node.next = newNode;
 		newNode.previous = node;
 		++this.size;
+		return true;
 	}
 
-	public void add(int index, int element) {
-		Node newNode = new Node(element);
-
-		if (index > this.size) {
-			throw new IllegalArgumentException("Invalid index!");
-		}
-
-		if (index == 0) {
-			newNode.next = this.list;
-			this.list.previous = newNode;
-			this.list = newNode;
-			++this.size;
-			return;
-		}
-
-		Node node = this.list;
-		for (int i = 1; i < index; i++) {
-			node = node.next;
-		}
-		newNode.next = node.next;
-		node.next = newNode;
-		newNode.previous = node;
-		++this.size;
-	}
-
-	public boolean remove(int element) {
+	@Override
+	public boolean remove(E e) {
 		Node node = this.list;
 
-		while (node != null && node.data != element) {
+		while (node != null && !node.data.equals(e)) {
 			node = node.next;
 		}
 		if (node == null) {
@@ -79,6 +57,32 @@ public class DoubleLinkedList {
 		return true;
 	}
 
+	public boolean add(int index, E element) {
+		Node newNode = new Node<>(element);
+
+		if (index > this.size) {
+			throw new IllegalArgumentException("Invalid index!");
+		}
+
+		if (index == 0) {
+			newNode.next = this.list;
+			this.list.previous = newNode;
+			this.list = newNode;
+			++this.size;
+			return true;
+		}
+
+		Node node = this.list;
+		for (int i = 1; i < index; i++) {
+			node = node.next;
+		}
+		newNode.next = node.next;
+		node.next = newNode;
+		newNode.previous = node;
+		++this.size;
+		return true;
+	}
+
 	public void access() {
 		Node node = this.list;
 		while (node != null) {
@@ -88,12 +92,12 @@ public class DoubleLinkedList {
 		System.out.println();
 	}
 
-	private static class Node {
-		private int data;
+	private static class Node<E> {
+		private E data;
 		private Node previous;
 		private Node next;
 
-		public Node(int data) {
+		public Node(E data) {
 			this.data = data;
 			this.previous = null;
 			this.next = null;

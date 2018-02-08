@@ -1,6 +1,6 @@
 package me.xlui.stack.impl;
 
-public class LinkedStack {
+public class LinkedStack<E> implements Stack<E> {
 	private Node top;
 	private int size;
 
@@ -17,41 +17,44 @@ public class LinkedStack {
 		return this.size == 0;
 	}
 
-	public void push(int element) {
+	@Override
+	public void push(E e) {
 		if (this.top == null) {
-			this.top = new Node(element);
+			this.top = new Node<>(e);
 			++this.size;
 			return;
 		}
 
-		Node node = new Node(element);
+		Node node = new Node<>(e);
 		node.next = this.top;
 		this.top = node;
 		++this.size;
 	}
 
-	public int pop() throws Exception {
+	@SuppressWarnings("unchecked")
+	public E pop() throws Exception {
 		if (this.top == null) {
 			throw new Exception("Stack is empty!");
 		}
-		int top = this.top.data;
+		E top = (E) this.top.data;
 		this.top = this.top.next;
 		--this.size;
 		return top;
 	}
 
-	public int peek() throws Exception {
+	@SuppressWarnings("unchecked")
+	public E peek() throws Exception {
 		if (this.top == null) {
 			throw new Exception("Stack is empty!");
 		}
-		return this.top.data;
+		return (E) this.top.data;
 	}
 
-	private static class Node {
-		private int data;
+	private static class Node<E> {
+		private E data;
 		private Node next;
 
-		public Node(int data) {
+		public Node(E data) {
 			this.data = data;
 			this.next = null;
 		}

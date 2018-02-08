@@ -5,7 +5,6 @@ import me.xlui.tree.impl.AVLTree;
 public class Main {
 	public static void main(String[] args) throws Exception {
 		AVLTree tree = new AVLTree();
-
 		tree.insert(3);
 		tree.insert(2);
 		tree.insert(1);

@@ -1,16 +1,16 @@
 package me.xlui.stack.impl;
 
-public class ArrayStack {
+public class ArrayStack<E> implements Stack<E> {
 	private static final int DEFAULT_CAPACITY = 10;
-	private int[] data;
+	private Object[] data;
 	private int top = -1;
 
 	public ArrayStack() {
-		this.data = new int[DEFAULT_CAPACITY];
+		this.data = new Object[DEFAULT_CAPACITY];
 	}
 
 	public ArrayStack(int size) {
-		this.data = new int[size];
+		this.data = new Object[size];
 	}
 
 	public int size() {
@@ -21,24 +21,27 @@ public class ArrayStack {
 		return top == -1;
 	}
 
-	public void push(int element) throws Exception {
+	@Override
+	public void push(E e) throws Exception {
 		if (top == DEFAULT_CAPACITY - 1) {
 			throw new Exception("Stack is full!");
 		}
-		this.data[++this.top] = element;
+		this.data[++this.top] = e;
 	}
 
-	public int pop() throws Exception {
+	@SuppressWarnings("unchecked")
+	public E pop() throws Exception {
 		if (top == -1) {
 			throw new Exception("Stack is empty!");
 		}
-		return this.data[this.top--];
+		return (E) this.data[this.top--];
 	}
 
-	public int peek() throws Exception {
+	@SuppressWarnings("unchecked")
+	public E peek() throws Exception {
 		if (this.top == -1) {
 			throw new Exception("Stack is empty!");
 		}
-		return this.data[this.top];
+		return (E) this.data[this.top];
 	}
 }
