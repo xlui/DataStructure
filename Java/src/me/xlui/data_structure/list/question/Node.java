@@ -1,0 +1,11 @@
+package me.xlui.data_structure.list.question;
+
+public class Node {
+	public int data;
+	public Node next;
+
+	public Node(int data) {
+		this.data = data;
+		this.next = null;
+	}
+}
