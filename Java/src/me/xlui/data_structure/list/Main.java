@@ -1,7 +1,5 @@
 package me.xlui.data_structure.list;
 
-import me.xlui.data_structure.list.impl.CircularList;
-
 public class Main {
 	public static void main(String[] args) {
 		CircularList<Integer> list = new CircularList<>();

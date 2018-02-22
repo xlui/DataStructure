@@ -1,8 +1,9 @@
-package me.xlui.data_structure.list.impl;
+package me.xlui.data_structure.list;
 
 /**
  * 数组实现的顺序表
  */
+@SuppressWarnings("unchecked")
 public class ArrayList<E> implements List<E> {
 	private static final int DEFAULT_CAPACITY = 10;
 	private int size;
@@ -13,10 +14,17 @@ public class ArrayList<E> implements List<E> {
 		this.size = 0;
 	}
 
+	public ArrayList(int size) {
+		this.data = new Object[size];
+		this.size = 0;
+	}
+
+	@Override
 	public int size() {
 		return this.size;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.size == 0;
 	}
@@ -31,6 +39,18 @@ public class ArrayList<E> implements List<E> {
 	}
 
 	@Override
+	public boolean add(int index, E e) {
+		if (this.size + 1 > DEFAULT_CAPACITY) {
+			return false;
+		}
+		// System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length);
+		System.arraycopy(this.data, index, this.data, index + 1, this.size - index);
+		this.data[index] = e;
+		++this.size;
+		return true;
+	}
+
+	@Override
 	public boolean remove(E e) {
 		int index = this.indexOf(e);
 		if (index == -1) {
@@ -38,6 +58,11 @@ public class ArrayList<E> implements List<E> {
 		}
 		System.arraycopy(this.data, index + 1, this.data, index, this.size - index);
 		return true;
+	}
+
+	@Override
+	public E get(int index) {
+		return (E) this.data[index];
 	}
 
 	@Override
@@ -59,19 +84,5 @@ public class ArrayList<E> implements List<E> {
 			}
 		}
 		return -1;
-	}
-
-	/**
-	 * 插入操作，当数组空间不够时抛出异常
-	 */
-	public boolean insert(int position, E var) {
-		if (this.size + 1 > DEFAULT_CAPACITY) {
-			return false;
-		}
-		// System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length);
-		System.arraycopy(this.data, position, this.data, position + 1, this.size - position);
-		this.data[position] = var;
-		++this.size;
-		return true;
 	}
 }

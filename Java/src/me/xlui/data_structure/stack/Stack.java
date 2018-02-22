@@ -1,4 +1,4 @@
-package me.xlui.data_structure.stack.impl;
+package me.xlui.data_structure.stack;
 
 public interface Stack<E> {
 	int size();

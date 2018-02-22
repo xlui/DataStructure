@@ -1,4 +1,4 @@
-package me.xlui.data_structure.list.question;
+package me.xlui.question;
 
 /**
  * 判断链表中是否有环，使用快慢指针的方法

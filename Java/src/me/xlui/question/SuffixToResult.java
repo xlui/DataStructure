@@ -1,4 +1,4 @@
-package me.xlui.data_structure.stack.question;
+package me.xlui.question;
 
 import java.util.Stack;
 

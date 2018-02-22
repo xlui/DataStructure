@@ -1,4 +1,4 @@
-package me.xlui.data_structure.list.question;
+package me.xlui.question;
 
 /**
  * 给定链表的头指针和一个结点指针，在 O（1）的时间删除该结点

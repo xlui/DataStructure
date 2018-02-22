@@ -1,5 +1,9 @@
-package me.xlui.data_structure.list.impl;
+package me.xlui.data_structure.list;
 
+/**
+ * 双向链表
+ */
+@SuppressWarnings("unchecked")
 public class DoubleLinkedList<E> implements List<E> {
 	private int size = 0;
 	private Node list;
@@ -8,19 +12,21 @@ public class DoubleLinkedList<E> implements List<E> {
 		this.list = null;
 	}
 
+	@Override
 	public int size() {
 		return this.size;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.size == 0;
 	}
 
 	@Override
 	public boolean add(E e) {
-		if (this.list == null) {
+		if (this.isEmpty()) {
 			this.list = new Node<>(e);
-			++this.size;
+			this.size++;
 			return true;
 		}
 		Node node = this.list;
@@ -30,7 +36,36 @@ public class DoubleLinkedList<E> implements List<E> {
 		}
 		node.next = newNode;
 		newNode.previous = node;
-		++this.size;
+		this.size++;
+		return true;
+	}
+
+	@Override
+	public boolean add(int index, E e) {
+		if (index > this.size) {
+			throw new IllegalArgumentException("Invalid index!");
+		}
+
+		Node newNode = new Node<>(e);
+
+		if (index == 0) {
+			newNode.next = this.list;
+			this.list.previous = newNode;
+			this.list = newNode;
+			this.size++;
+			return true;
+		}
+
+		Node node = this.list;
+		for (int i = 1; i < index; i++) {
+			node = node.next;
+		}
+		newNode.next = node.next;
+		node.next = newNode;
+		newNode.previous = node;
+		if (newNode.next != null)
+			newNode.next.previous = newNode;
+		this.size++;
 		return true;
 	}
 
@@ -47,42 +82,29 @@ public class DoubleLinkedList<E> implements List<E> {
 
 		if (node.previous != null) {
 			node.previous.next = node.next;
+			if (node.next != null)
+				node.next.previous = node.previous;
 		} else {
 			this.list = node.next;
-			node.previous = null;
-		}
-		if (node.next != null) {
-			node.next.previous = node.previous;
+			this.list.previous = null;
 		}
 		return true;
 	}
 
-	public boolean add(int index, E element) {
-		Node newNode = new Node<>(element);
-
-		if (index > this.size) {
+	@Override
+	public E get(int index) {
+		if (index >= this.size) {
 			throw new IllegalArgumentException("Invalid index!");
 		}
 
-		if (index == 0) {
-			newNode.next = this.list;
-			this.list.previous = newNode;
-			this.list = newNode;
-			++this.size;
-			return true;
-		}
-
 		Node node = this.list;
-		for (int i = 1; i < index; i++) {
+		for (int i = 0; i < index; i++) {
 			node = node.next;
 		}
-		newNode.next = node.next;
-		node.next = newNode;
-		newNode.previous = node;
-		++this.size;
-		return true;
+		return (E) node.data;
 	}
 
+	@Override
 	public void access() {
 		Node node = this.list;
 		while (node != null) {
@@ -93,9 +115,9 @@ public class DoubleLinkedList<E> implements List<E> {
 	}
 
 	private static class Node<E> {
-		private E data;
-		private Node previous;
-		private Node next;
+		E data;
+		Node previous;
+		Node next;
 
 		public Node(E data) {
 			this.data = data;

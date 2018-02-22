@@ -1,4 +1,4 @@
-package me.xlui.data_structure.list.question;
+package me.xlui.question;
 
 public class Node {
 	public int data;

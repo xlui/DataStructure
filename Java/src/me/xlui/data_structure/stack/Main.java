@@ -1,7 +1,5 @@
 package me.xlui.data_structure.stack;
 
-import me.xlui.data_structure.stack.impl.LinkedStack;
-
 public class Main {
 	public static void main(String[] args) throws Exception {
 		LinkedStack stack = new LinkedStack();

@@ -1,4 +1,4 @@
-package me.xlui.data_structure.list.impl;
+package me.xlui.data_structure.list;
 
 public interface List<E> {
 	int size();
@@ -7,7 +7,11 @@ public interface List<E> {
 
 	boolean add(E e);
 
+	boolean add(int index, E e);
+
 	boolean remove(E e);
+
+	E get(int index);
 
 	void access();
 }

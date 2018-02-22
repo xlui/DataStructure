@@ -1,7 +1,11 @@
-package me.xlui.data_structure.stack.impl;
+package me.xlui.data_structure.stack;
 
+/**
+ * 栈 —— 数组实现
+ */
+@SuppressWarnings("unchecked")
 public class ArrayStack<E> implements Stack<E> {
-	private static final int DEFAULT_CAPACITY = 10;
+	private static final int DEFAULT_CAPACITY = 20;
 	private Object[] data;
 	private int top = -1;
 
@@ -9,14 +13,12 @@ public class ArrayStack<E> implements Stack<E> {
 		this.data = new Object[DEFAULT_CAPACITY];
 	}
 
-	public ArrayStack(int size) {
-		this.data = new Object[size];
-	}
-
+	@Override
 	public int size() {
 		return top != -1 ? top + 1 : 0;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return top == -1;
 	}
@@ -29,15 +31,15 @@ public class ArrayStack<E> implements Stack<E> {
 		this.data[++this.top] = e;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public E pop() throws Exception {
-		if (top == -1) {
+		if (this.top == -1) {
 			throw new Exception("Stack is empty!");
 		}
 		return (E) this.data[this.top--];
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public E peek() throws Exception {
 		if (this.top == -1) {
 			throw new Exception("Stack is empty!");
