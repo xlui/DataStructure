@@ -1,37 +1,44 @@
 package me.xlui.data_structure.tree;
 
-public class AVLTree {
+@SuppressWarnings("unchecked")
+public class AVLTree<E extends Comparable> implements Tree<E> {
 	private Node root;
 
-	public void insert(int element) {
+	public void insert(E element) {
 		this.root = this.insert(this.root, element);
 	}
 
-	public void remove(int element) throws Exception {
+	public void remove(E element) throws Exception {
 		this.root = this.remove(this.root, element);
 	}
 
+	@Override
+	public void preOrderTraversal() {
+		this.preOrderTraversal(this.root);
+	}
+
+	@Override
 	public void inOrderTraversal() {
 		this.inOrderTraversal(this.root);
 	}
 
-	public void preOrderTraversal() {
-		this.preOrderTraversal(this.root);
+	@Override
+	public void postOrderTraversal() {
+		this.postOrderTraversal(this.root);
 	}
 
 	// *********************
 	//    private methods
 	// *********************
-	private Node insert(Node node, int element) {
+	private Node insert(Node node, E element) {
 		if (node == null) {
-			node = new Node();
-			node.data = element;
+			node = new Node(element);
 		} else {
-			if (element < node.data) {
+			if (element.compareTo(node.data) < 0) {
 				node.left = insert(node.left, element);
-				// 插入节点后，AVL 树失去平衡
+				// 检测在左子树插入节点后，AVL 树是否失去平衡
 				if (height(node.left) - height(node.right) == 2) {
-					if (element < node.left.data) {
+					if (element.compareTo(node.left.data) < 0) {
 						// 说明插入的位置是左儿子的左子节点，需要进行 LL 旋转
 						node = this.leftLeftRotation(node);
 					} else {
@@ -39,10 +46,11 @@ public class AVLTree {
 						node = this.leftRightRotation(node);
 					}
 				}
-			} else if (element > node.data) {
+			} else if (element.compareTo(node.data) > 0) {
 				node.right = insert(node.right, element);
+				// 检测在右子树插入节点后，AVL 树是否失去平衡
 				if (height(node.right) - height(node.left) == 2) {
-					if (element > node.right.data) {
+					if (element.compareTo(node.right.data) > 0) {
 						// 说明插入位置是右儿子的右子节点，需要进行 RR 旋转
 						node = rightRightRotation(node);
 					} else {
@@ -58,11 +66,11 @@ public class AVLTree {
 		return node;
 	}
 
-	private Node remove(Node node, int element) throws Exception {
+	private Node remove(Node node, E element) throws Exception {
 		if (node == null) {
 			return null;
 		}
-		if (element < node.data) {
+		if (element.compareTo(node.data) < 0) {
 			node.left = this.remove(node.left, element);
 			// 删除左子树结点，可能导致 AVL 失衡。需要根据情况进行右旋
 			if (height(node.right) - height(node.left) == 2) {
@@ -70,17 +78,19 @@ public class AVLTree {
 					// 这一层判断是为了选择要进行的旋转。如果 右子树的左子树的高度 高于 右子树的右子树的高度，则进行 RL 旋转
 					node = rightLeftRotation(node);
 				} else {
+					// 否则，即 右子树的右子树 高于或者等于 右子树的左子树，则进行 RR 旋转
 					node = rightRightRotation(node);
 				}
 			}
-		} else if (element > node.data) {
+		} else if (element.compareTo(node.data) > 0) {
 			node.right = this.remove(node.right, element);
 			// 删除右子树结点，可能导致 AVL 失衡。需要根据情况进行左旋
 			if (height(node.left) - height(node.right) == 2) {
-				if (height(node.left.left) > height(node.left.right)) {
-					// 这一层判断是为了选择要进行的旋转。如果 左子树的左子树的高度 高于 左子树的右子树的高度，则进行 LL 旋转
+				if (height(node.left.left) >= height(node.left.right)) {
+					// 这一层判断是为了选择要进行的旋转。如果 左子树的左子树的高度 高于或等于 左子树的右子树的高度，则进行 LL 旋转
 					node = leftLeftRotation(node);
 				} else {
+					// 否则，即 左子树的右子树 高于 左子树的左子树，则进行 LR 旋转
 					node = leftRightRotation(node);
 				}
 			}
@@ -89,10 +99,10 @@ public class AVLTree {
 			if (node.left != null && node.right != null) {
 				if (height(node.left) > height(node.right)) {
 					node.data = findMax(node.left);
-					node.left = remove(node.left, node.data);
+					node.left = remove(node.left, (E) node.data);
 				} else {
 					node.data = findMin(node.right);
-					node.right = remove(node.right, node.data);
+					node.right = remove(node.right, (E) node.data);
 				}
 			} else {
 				node = (node.left != null) ? node.left : node.right;
@@ -121,7 +131,7 @@ public class AVLTree {
 
 		// 重新计算高度
 		node.height = Math.max(height(node.left), height(node.right)) + 1;
-		tmp.height = Math.max(height(tmp.left), node.height) + 1;
+		tmp.height = Math.max(height(tmp.left), height(tmp.right)) + 1;
 		return tmp;
 	}
 
@@ -132,7 +142,7 @@ public class AVLTree {
 		tmp.left = node;
 
 		node.height = Math.max(height(node.left), height(node.right)) + 1;
-		tmp.height = Math.max(height(tmp.left), node.height);
+		tmp.height = Math.max(height(tmp.left), height(tmp.left)) + 1;
 
 		return tmp;
 	}
@@ -149,21 +159,21 @@ public class AVLTree {
 		return rightRightRotation(node);
 	}
 
-	private int findMin(Node node) throws Exception {
+	private E findMin(Node node) throws Exception {
 		if (node != null) {
 			while (node.left != null)
 				node = node.left;
-			return node.data;
+			return (E) node.data;
 		} else {
 			throw new Exception("AVL Tree is empty!");
 		}
 	}
 
-	private int findMax(Node node) throws Exception {
+	private E findMax(Node node) throws Exception {
 		if (node != null) {
 			while (node.right != null)
 				node = node.right;
-			return node.data;
+			return (E) node.data;
 		} else {
 			throw new Exception("AVL Tree is empty!");
 		}
@@ -185,19 +195,24 @@ public class AVLTree {
 		}
 	}
 
-	private static class Node {
-		int data;
+	private void postOrderTraversal(Node node) {
+		if (node != null) {
+			postOrderTraversal(node.left);
+			postOrderTraversal(node.right);
+			System.out.print(node.data + " ");
+		}
+	}
+
+	private static final class Node<E> {
+		E data;
 		// 结点中增加 height 字段表明高度
-		// 约定叶子结点的高度为 0，空结点的高度为 -1，
-		// 非空非叶子结点的高度由子树的高度计算获得
+		// 约定叶子结点的高度为 1，空结点的高度为 0，非空非叶子结点的高度由子树的高度计算获得
 		int height;
 		Node left;
 		Node right;
 
-		public Node() {
-			data = 0;
-			left = null;
-			right = null;
+		public Node(E data) {
+			this.data = data;
 		}
 	}
 }

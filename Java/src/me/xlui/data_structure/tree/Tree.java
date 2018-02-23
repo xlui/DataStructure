@@ -7,5 +7,5 @@ public interface Tree<E> {
 
 	void postOrderTraversal();
 
-	void levelOrderTraversal();
+	default void levelOrderTraversal() {}
 }

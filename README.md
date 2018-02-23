@@ -15,7 +15,7 @@
 1. [二叉树](#二叉树)
 1. [完全二叉树](#完全二叉树)
 1. [二叉搜索（查找）树](#二叉搜索树)
-1. AVL 树
+1. [AVL 树](#AVL树)
 1. 伸展树
 1. 哈夫曼树（最优二叉树）
 1. 红黑树
@@ -123,9 +123,9 @@
 
 > 在任何一次遍历过程中，对于某一个结点总会访问三次。前序遍历就是在第一次访问的时候输出结点中信息，中序遍历则是在第二次访问的时候输出，后序遍历是在第三次访问的时候进行输出。
 
-前序遍历和中序遍历也可以利用栈来进行非递归遍历，后序遍历的非递归实现比较复杂。
+前序遍历和中序遍历也可以利用**栈**来进行非递归遍历，后序遍历的非递归实现比较复杂。
 
-层次遍历利用队列实现，每次从队列中取出一个结点访问，然后将该结点的左右儿子（非空）放入队列。
+层次遍历利用**队列**实现，每次从队列中取出一个结点访问，然后将该结点的左右儿子（非空）放入队列。
 
 问题1：输出二叉树的叶结点
 
@@ -175,3 +175,79 @@ private int height(Node node) {
 1. 没有键值相等的结点
 
 二叉搜索树常用的操作有：插入、删除、查找、查找最大值、查找最小值。
+
+## AVL树
+
+AVL 树是高度平衡的二叉树。它的特点是：AVL 树中任何两个子树的高度最大差别为 1。
+
+AVL 树中一个重要的操作就是旋转，在每次插入删除后都要检测 AVL 树的平衡是否被打破，如果被打破就要进行相应的旋转来保持平衡。
+
+AVL 树的高度：
+
+按照维基百科上的定义：树的高度为最大层次。即空二叉树的高度为 0，非空二叉树的高度为它的最大层次（根的层次为 1，根的子结点为第 2 层，依次类推）：
+
+```java
+private int height(Node node) {
+    if (node != null)
+        return node.height;
+    return 0;
+}
+```
+
+AVL 树中主要涉及到了四种旋转：LL旋转（右旋）、RR旋转（左旋）、LR旋转（先左旋，再右旋）、RL旋转（先右旋，再左旋）。
+
+RR旋转（左旋）：
+
+```java
+private Node rightRightRotation(Node node) {
+    Node tmp = node.right;
+    node.right = tmp.left;
+    tmp.left = node;
+
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    tmp.height = Math.max(height(tmp.left), height(tmp.left)) + 1;
+
+    return tmp;
+}
+```
+
+LL旋转（右旋）：
+
+```java
+// LL 旋转。T 结点的左子树的左子树插入结点导致平衡因子改变。
+private Node leftLeftRotation(Node node) {
+    // 定义临时结点，指向 node 的左孩子，旋转后替代 node 的位置
+    Node tmp = node.left;
+    // 将 node（失衡结点）的左孩子指向 tmp 的右孩子上
+    node.left = tmp.right;
+    // 将 tmp 的右孩子指向 node
+    tmp.right = node;
+    // 以上，旋转完成
+
+    // 重新计算高度
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    tmp.height = Math.max(height(tmp.left), height(tmp.right)) + 1;
+    return tmp;
+}
+```
+
+LR旋转：
+
+```java
+// LR 旋转，首先进行 RR 旋转使其变为 LL 失衡状态，然后进行 LL 旋转
+private Node leftRightRotation(Node node) {
+    node.left = rightRightRotation(node.left);
+    return leftLeftRotation(node);
+}
+```
+
+RL 旋转：
+
+```java
+// RL 旋转，首先进行 LL 旋转使其变为 RR 失衡状态，然后进行 RR 旋转
+private Node rightLeftRotation(Node node) {
+    node.right = leftLeftRotation(node.right);
+    return rightRightRotation(node);
+}
+```
+

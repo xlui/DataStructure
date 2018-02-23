@@ -4,7 +4,74 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 //		testBinaryTree();
 //		testCompleteBinaryTree();
-		testBinarySearchTree();
+//		testBinarySearchTree();
+		testAVLTree();
+	}
+
+	private static void testAVLTree() throws Exception {
+		AVLTree<Integer> tree = new AVLTree<>();
+		tree.insert(3);
+		// 3
+		tree.insert(2);
+		//  3
+		// 2
+		tree.insert(1);
+		//   3       2
+		//  2   =>  1 3
+		// 1
+		tree.insert(4);
+		//  2
+		// 1 3
+		//    4
+		tree.insert(5);
+		//  2           2
+		// 1 3    =>  1   4
+		//    4          3 5
+		//     5
+		tree.insert(6);
+		//   2          4
+		// 1   4  =>  2   5
+		//    3 5    1 3   6
+		//       6
+		tree.insert(7);
+		//   4          4
+		// 2   5  =>  2   6
+		//1 3   6    1 3 5 7
+		//       7
+		System.out.println("前序遍历：");
+		tree.preOrderTraversal();
+		// 4 2 1 3 6 5 7
+		System.out.println("\n中序遍历：");
+		tree.inOrderTraversal();
+		// 1 2 3 4 5 6 7
+		System.out.println("\n后序遍历：");
+		tree.postOrderTraversal();
+		// 1 3 2 5 7 6 4
+
+		//   4
+		// 2   6
+		//1 3 5 7
+		tree.remove(5);
+		//   4
+		// 2   6
+		//1 3   7
+		tree.remove(6);
+		//   4
+		// 2   7
+		//1 3
+		tree.remove(7);
+		//  4       2
+		// 2   => 1   4
+		//1 3        3
+		System.out.println("\n删除5，6，7后前序遍历：");
+		tree.preOrderTraversal();
+		// 2 1 4 3
+		System.out.println("\n删除5，6，7后中序遍历：");
+		tree.inOrderTraversal();
+		// 1 2 3 4
+		System.out.println("\n删除5，6，7后后序遍历：");
+		tree.postOrderTraversal();
+		// 1 3 4 2
 	}
 
 	private static void testBinarySearchTree() throws Exception {

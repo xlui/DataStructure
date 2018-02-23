@@ -71,11 +71,6 @@ public class BinarySearchTree<E extends Comparable> implements Tree<E> {
 		this.postOrderTraversal(this.root);
 	}
 
-	@Override
-	public void levelOrderTraversal() {
-
-	}
-
 	//**************************
 	//   start private method
 	//**************************
