@@ -1,4 +1,4 @@
-package me.xlui.data_structure.tree.impl;
+package me.xlui.data_structure.tree;
 
 /**
  * Unchecked Splay Tree

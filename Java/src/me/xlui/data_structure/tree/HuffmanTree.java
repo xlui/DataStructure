@@ -1,4 +1,4 @@
-package me.xlui.data_structure.tree.impl;
+package me.xlui.data_structure.tree;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;

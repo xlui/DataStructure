@@ -1,18 +1,17 @@
-package me.xlui.data_structure.tree.impl;
+package me.xlui.data_structure.tree;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
 
-/**
+/*
  * 默认的树是：
- * <p>
- * A
- * B     C
+ *      A
+ *   B     C
  * D   F G   I
- * E   H
+ *    E   H
  */
-public class BinaryTree {
+public class BinaryTree<E> implements Tree<E> {
 	private Node root;
 
 	public BinaryTree() {
@@ -51,8 +50,9 @@ public class BinaryTree {
 	}
 
 	// 先序遍历
+	@Override
 	public void preOrderTraversal() {
-		preOrderTraversal(this.root);
+		this.preOrderTraversal(this.root);
 	}
 
 	// 实现
@@ -65,8 +65,9 @@ public class BinaryTree {
 	}
 
 	// 中序遍历
+	@Override
 	public void inOrderTraversal() {
-		inOrderTraversal(this.root);
+		this.inOrderTraversal(this.root);
 	}
 
 	// 实现
@@ -79,8 +80,9 @@ public class BinaryTree {
 	}
 
 	// 后序遍历
+	@Override
 	public void postOrderTraversal() {
-		postOrderTraversal(this.root);
+		this.postOrderTraversal(this.root);
 	}
 
 	// 实现
@@ -137,11 +139,12 @@ public class BinaryTree {
 	 * 利用队列，每次从队列里取出一个结点访问，然后将该结点的左右儿子（非空）放入队列。依次循环。
 	 */
 	// 层次遍历 -- 队列实现
+	@Override
 	public void levelOrderTraversal() {
-		Queue<Node> queue = new ArrayDeque<>();
-		Node node;
 		if (this.root == null)
 			return;
+		Queue<Node> queue = new ArrayDeque<>();
+		Node node;
 		queue.add(this.root);
 		while (!queue.isEmpty()) {
 			node = queue.remove();
@@ -183,18 +186,18 @@ public class BinaryTree {
 		return 0;
 	}
 
-	private class Node {
-		private String data;
-		private Node left;
-		private Node right;
+	private static final class Node<E> {
+		E data;
+		Node left;
+		Node right;
 
 		public Node() {
-			this.data = "";
+			this.data = null;
 			this.left = null;
 			this.right = null;
 		}
 
-		public Node(String data) {
+		public Node(E data) {
 			this.data = data;
 			this.left = null;
 			this.right = null;
