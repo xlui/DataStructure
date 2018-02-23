@@ -48,6 +48,6 @@ public class ArrayQueue<E> implements Queue<E> {
 			throw new Exception("Queue is empty!");
 		}
 		this.size--;
-		return (E) this.data[this.head--];
+		return (E) this.data[this.head++];
 	}
 }
