@@ -17,7 +17,7 @@
 1. [二叉搜索（查找）树](#二叉搜索树)
 1. [AVL 树](#AVL树)
 1. [伸展树](#伸展树)
-1. 哈夫曼树（最优二叉树）
+1. [哈夫曼树（最优二叉树）](#哈夫曼树)
 1. 红黑树
 1. 二叉堆
 1. 左倾堆
@@ -43,7 +43,7 @@
 
 一些问题：
 
-1. O(1) 时间内删除链表节点
+1. O(1) 时间内删除链表结点
 1. 判断链表中是否有环
 1. 单链表转置
 
@@ -111,7 +111,7 @@
 
 对于第三条性质，通过边来证明：
 
-> 从树底往上看，每个结点都往上有一条边，根节点往上没有边。
+> 从树底往上看，每个结点都往上有一条边，根结点往上没有边。
 >
 > 从树顶往下看，n0 往下没有边，n1 往下有一条边，n2 往下有两条边。
 
@@ -281,7 +281,7 @@ private Node splay(Node node, E key) {
         if (key.compareTo(node.left.key) < 0) {
             // 如果 key 小于根结点的左儿子，则对根结点的左儿子的左儿子进行 splay 调用
             node.left.left = splay(node.left.left, key);
-            // 调用结束后对根节点进行一次右旋，根节点指向其原左儿子，目标结点（（原根节点的左儿子的左儿子）旋转到根节点的左儿子
+            // 调用结束后对根结点进行一次右旋，根结点指向其原左儿子，目标结点（（原根结点的左儿子的左儿子）旋转到根结点的左儿子
             //  A       B
             // B   =>  C A
             //C     目标结点是 C
@@ -290,18 +290,18 @@ private Node splay(Node node, E key) {
             // 如果 key 大于根结点的左儿子，则对根结点的左儿子的右儿子进行 splay 调用
             node.left.right = splay(node.left.right, key);
             if (node.left.right != null)
-                // 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根节点的左儿子
+                // 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根结点的左儿子
                 node.left = leftRotation(node.left);
             //  A       A
             // B   =>  C    C 是目标结点
             //  C     B
         }
 
-        // 最后如果根节点左儿子为空，则不存在 key 结点，返回当前根结点
+        // 最后如果根结点左儿子为空，则不存在 key 结点，返回当前根结点
         if (node.left == null) {
             return node;
         } else {
-            // 如果左儿子非空，则说明 key 结点存在，并且就在根节点的左儿子，进行一次右旋将其旋转为新的根结点
+            // 如果左儿子非空，则说明 key 结点存在，并且就在根结点的左儿子，进行一次右旋将其旋转为新的根结点
             return rightRotation(node);
         }
     } else if (key.compareTo(node.key) > 0) {
@@ -314,7 +314,7 @@ private Node splay(Node node, E key) {
             // 如果 key 小于根结点的右儿子，则对根结点的右儿子的左儿子进行 splay 调用
             node.right.left = splay(node.right.left, key);
             if (node.right.left != null)
-                // 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根节点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
+                // 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根结点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
                 node.right = rightRotation(node.right);
             // A        A
             //  B  =>    C      C是目标结点
@@ -322,23 +322,58 @@ private Node splay(Node node, E key) {
         } else if (key.compareTo(node.right.key) > 0) {
             // 如果 key 大于根结点的右儿子，则对根结点的右儿子的右儿子进行 splay 调用
             node.right.right = splay(node.right.right, key);
-            // 调用结束后对根结点进行一次左旋，根节点指向其右儿子，现在根节点的右儿子是目标结点（原根节点的右儿子的右儿子）
+            // 调用结束后对根结点进行一次左旋，根结点指向其右儿子，现在根结点的右儿子是目标结点（原根结点的右儿子的右儿子）
             node = leftRotation(node);
             // A        B
             //  B  =>  A C
             //   C    C是目标结点
         }
 
-        // 最后如果根节点右儿子为空，则不存在 key 结点，返回当前根结点
+        // 最后如果根结点右儿子为空，则不存在 key 结点，返回当前根结点
         if (node.right == null) {
             return node;
         } else {
-            // 如果右儿子非空，则说明 key 结点存在，并且就在根节点的右儿子，进行一次左旋将其旋转为新的根结点
+            // 如果右儿子非空，则说明 key 结点存在，并且就在根结点的右儿子，进行一次左旋将其旋转为新的根结点
             return leftRotation(node);
         }
     } else {
         // 如果找到，直接返回
         return node;
     }
+}
+```
+
+## 哈夫曼树
+
+哈夫曼树，又称最优二叉树。
+
+定义：给定 n 个权值作为 n 个叶子结点，构造一颗二叉树，若树的带权路径长度达到最小，则这棵树称为哈夫曼树。
+
+路径和路径长度：在一棵树中，从一个结点往下可以达到的孩子或孙子结点之间的通路，称为路径。通路中分支的数目称为路径长度。若规定根结点的层数为 1，则从根结点到第 L 层结点的路径长度为 L-1。
+
+结点的权：若将树中结点赋给一个有着某种含义的数值，则这个数值称为该结点的权。
+
+结点的带权路径长度：从根结点到该结点之间的路径长度与该结点的权的乘积。
+
+树的带权路径长度：所有叶子结点的带权路径长度之和。
+
+可以利用优先队列来创建哈夫曼树：
+
+```java
+public HuffmanTree(int... elements) {
+    Node parent = null;
+    PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.key));
+    for (int element : elements) {
+        queue.add(new Node(element));
+    }
+    while (queue.size() > 1) {
+        // 当最后两个结点被取出计算 parent 后，parent 又放入队列中，此时应该停止循环。
+        // 停止的条件就是 size > 1
+        Node left = queue.poll();
+        Node right = queue.poll();
+        parent = new Node(left.key + right.key, left, right);
+        queue.add(parent);
+    }
+    this.root = parent;
 }
 ```

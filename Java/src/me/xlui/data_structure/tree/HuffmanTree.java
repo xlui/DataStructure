@@ -6,13 +6,12 @@ import java.util.PriorityQueue;
 /**
  * 利用优先队列构造哈夫曼树
  */
-public class HuffmanTree {
+public class HuffmanTree implements Tree {
 	private Node root;
 
 	public HuffmanTree(int... elements) {
 		Node parent = null;
 		PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.key));
-		// Comparator.comparingInt(lambda expression) 是创建一个比较器
 		for (int element : elements) {
 			queue.add(new Node(element));
 		}
@@ -27,16 +26,22 @@ public class HuffmanTree {
 		this.root = parent;
 	}
 
+	@Override
 	public void preOrderTraversal() {
 		this.preOrderTraversal(this.root);
+		System.out.println();
 	}
 
+	@Override
 	public void inOrderTraversal() {
 		this.inOrderTraversal(this.root);
+		System.out.println();
 	}
 
+	@Override
 	public void postOrderTraversal() {
 		this.postOrderTraversal(this.root);
+		System.out.println();
 	}
 
 	private void preOrderTraversal(Node node) {
@@ -64,9 +69,9 @@ public class HuffmanTree {
 	}
 
 	private static class Node {
-		private int key;
-		private Node left;
-		private Node right;
+		int key;
+		Node left;
+		Node right;
 
 		public Node() {
 			this.left = null;

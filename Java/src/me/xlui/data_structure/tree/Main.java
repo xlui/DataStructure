@@ -6,7 +6,18 @@ public class Main {
 //		testCompleteBinaryTree();
 //		testBinarySearchTree();
 //		testAVLTree();
-		testSplayTree();
+//		testSplayTree();
+		testHuffmanTree();
+	}
+
+	private static void testHuffmanTree() {
+		HuffmanTree tree = new HuffmanTree(1, 2, 5, 10);
+		System.out.println("先序遍历：");
+		tree.preOrderTraversal();
+		System.out.println("中序遍历：");
+		tree.inOrderTraversal();
+		System.out.println("后序遍历：");
+		tree.postOrderTraversal();
 	}
 
 	private static void testSplayTree() {

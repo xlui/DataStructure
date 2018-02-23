@@ -21,7 +21,7 @@ public class SplayTree<E extends Comparable> implements Tree<E> {
 	}
 
 	/**
-	 * 首先将要删除的结点旋转为根节点。
+	 * 首先将要删除的结点旋转为根结点。
 	 * 如果结点存在左儿子，右旋将左儿子旋转为新的根，删除右儿子
 	 * 如果结点没有左儿子，右旋将右儿子旋转为新的根，删除右儿子
 	 */
@@ -94,7 +94,7 @@ public class SplayTree<E extends Comparable> implements Tree<E> {
 			if (key.compareTo(node.left.key) < 0) {
 				// 如果 key 小于根结点的左儿子，则对根结点的左儿子的左儿子进行 splay 调用
 				node.left.left = splay(node.left.left, key);
-				// 调用结束后对根节点进行一次右旋，根节点指向其原左儿子，目标结点（（原根节点的左儿子的左儿子）旋转到根节点的左儿子
+				// 调用结束后对根结点进行一次右旋，根结点指向其原左儿子，目标结点（（原根结点的左儿子的左儿子）旋转到根结点的左儿子
 				//  A       B
 				// B   =>  C A
 				//C     目标结点是 C
@@ -103,18 +103,18 @@ public class SplayTree<E extends Comparable> implements Tree<E> {
 				// 如果 key 大于根结点的左儿子，则对根结点的左儿子的右儿子进行 splay 调用
 				node.left.right = splay(node.left.right, key);
 				if (node.left.right != null)
-					// 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根节点的左儿子
+					// 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根结点的左儿子
 					node.left = leftRotation(node.left);
 				//  A       A
 				// B   =>  C    C 是目标结点
 				//  C     B
 			}
 
-			// 最后如果根节点左儿子为空，则不存在 key 结点，返回当前根结点
+			// 最后如果根结点左儿子为空，则不存在 key 结点，返回当前根结点
 			if (node.left == null) {
 				return node;
 			} else {
-				// 如果左儿子非空，则说明 key 结点存在，并且就在根节点的左儿子，进行一次右旋将其旋转为新的根结点
+				// 如果左儿子非空，则说明 key 结点存在，并且就在根结点的左儿子，进行一次右旋将其旋转为新的根结点
 				return rightRotation(node);
 			}
 		} else if (key.compareTo(node.key) > 0) {
@@ -127,7 +127,7 @@ public class SplayTree<E extends Comparable> implements Tree<E> {
 				// 如果 key 小于根结点的右儿子，则对根结点的右儿子的左儿子进行 splay 调用
 				node.right.left = splay(node.right.left, key);
 				if (node.right.left != null)
-					// 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根节点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
+					// 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根结点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
 					node.right = rightRotation(node.right);
 				// A        A
 				//  B  =>    C      C是目标结点
@@ -135,18 +135,18 @@ public class SplayTree<E extends Comparable> implements Tree<E> {
 			} else if (key.compareTo(node.right.key) > 0) {
 				// 如果 key 大于根结点的右儿子，则对根结点的右儿子的右儿子进行 splay 调用
 				node.right.right = splay(node.right.right, key);
-				// 调用结束后对根结点进行一次左旋，根节点指向其右儿子，现在根节点的右儿子是目标结点（原根节点的右儿子的右儿子）
+				// 调用结束后对根结点进行一次左旋，根结点指向其右儿子，现在根结点的右儿子是目标结点（原根结点的右儿子的右儿子）
 				node = leftRotation(node);
 				// A        B
 				//  B  =>  A C
 				//   C    C是目标结点
 			}
 
-			// 最后如果根节点右儿子为空，则不存在 key 结点，返回当前根结点
+			// 最后如果根结点右儿子为空，则不存在 key 结点，返回当前根结点
 			if (node.right == null) {
 				return node;
 			} else {
-				// 如果右儿子非空，则说明 key 结点存在，并且就在根节点的右儿子，进行一次左旋将其旋转为新的根结点
+				// 如果右儿子非空，则说明 key 结点存在，并且就在根结点的右儿子，进行一次左旋将其旋转为新的根结点
 				return leftRotation(node);
 			}
 		} else {
