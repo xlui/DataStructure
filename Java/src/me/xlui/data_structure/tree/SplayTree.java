@@ -5,32 +5,54 @@ package me.xlui.data_structure.tree;
  * 每次插入删除都进行旋转。对于插入，将新增的结点旋转为根。对于删除，如果被删除结点右左儿子，将其作为新的根；如果没有，将右儿子作为新的根。
  * 旋转使用了新的算法，见函数。
  */
-public class SplayTree {
+@SuppressWarnings("unchecked")
+public class SplayTree<E extends Comparable> implements Tree<E> {
 	private Node root;
 
 	public SplayTree() {
 		this.root = null;
 	}
 
-	public void insert(int key) {
+	public void insert(E key) {
 		// 先将结点正常插入伸展树
 		this.root = this.insert(this.root, key);
 		// 将插入的结点旋转为树的根
 		this.root = this.splay(this.root, key);
 	}
 
-	public void remove(int key) {
-		this.remove(this.root, key);
+	/**
+	 * 首先将要删除的结点旋转为根节点。
+	 * 如果结点存在左儿子，右旋将左儿子旋转为新的根，删除右儿子
+	 * 如果结点没有左儿子，右旋将右儿子旋转为新的根，删除右儿子
+	 */
+	public void remove(E key) {
+		if (this.root == null) {
+			return;
+		}
+		this.root = this.splay(this.root, key);
+
+		if (key.compareTo(this.root.key) == 0) {
+			if (this.root.left == null) {
+				this.root = this.root.right;
+			} else {
+				Node node = this.root.right;
+				this.root = this.splay(this.root.left, key);
+				this.root.right = node;
+			}
+		}
 	}
 
+	@Override
 	public void preOrderTraversal() {
 		this.preOrderTraversal(this.root);
 	}
 
+	@Override
 	public void inOrderTraversal() {
 		this.inOrderTraversal(this.root);
 	}
 
+	@Override
 	public void postOrderTraversal() {
 		this.postOrderTraversal(this.root);
 	}
@@ -38,13 +60,12 @@ public class SplayTree {
 	// ********************
 	//    private method
 	// ********************
-	private Node insert(Node node, int key) {
+	private Node insert(Node node, E key) {
 		if (node == null) {
-			node = new Node();
-			node.key = key;
-		} else if (key < node.key) {
+			node = new Node(key);
+		} else if (key.compareTo(node.key) < 0) {
 			node.left = insert(node.left, key);
-		} else if (key > node.key) {
+		} else if (key.compareTo(node.key) > 0) {
 			node.right = insert(node.right, key);
 		} else {
 			System.out.println("不允许插入相同结点！");
@@ -53,46 +74,83 @@ public class SplayTree {
 	}
 
 	/**
-	 * 首先将要删除的结点旋转为根节点。
-	 * 如果结点存在左儿子，左旋将左儿子旋转为新的根，删除右儿子
-	 * 如果结点没有左儿子，右旋将右儿子旋转为新的根，删除右儿子
+	 * 算法思想参考了《数据结构与算法分析 —— C语言描述》中伸展树自底向上展开
+	 * 以下注释中，
+	 * <strong>根结点</strong>指的是调用 splay 时传入的 node 结点
+	 * <strong>目标结点</strong>是程序中调用 splay 函数的语句返回的结点
 	 */
-	private void remove(Node node, int key) {
-		node = splay(node, key);
-		if (node.left != null) {
-			this.root = rightRotation(node);
-			this.root.right = this.root.right.right;
-		} else {
-			this.root.right = this.root.right.right;
+	private Node splay(Node node, E key) {
+		if (node == null) {
+			// 如果结点为空，返回 null
+			return null;
 		}
-	}
 
-	/**
-	 * 这种算法的思想是：通过递归调用，每次检查根节点是不是要查找的值。是就返回，不是就进行对应的旋转。
-	 * 举个例子：对于 key < node.key 的情况，如果 node 没有左儿子，说明查找到了尽头，返回 node；
-	 * 如果 node 有左儿子，说明可以继续往下查找，进行一次左旋转（将左儿子旋转为新的根），然后递归调用。
-	 */
-	private Node splay(Node node, int key) {
-		if (key < node.key) {
-			if (node.left == null)
-				// 如果当前结点没有左儿子，说明不存在值为 key 的结点，将当前结点返回作为根。
+		if (key.compareTo(node.key) < 0) {
+			// 处理左侧，key < root.key
+			if (node.left == null) {
+				// 如果根结点没有左儿子，说明不存在值为 key 的结点，将根结点返回作为新的根。
 				return node;
-			else {
-				// 如果有，则说明还需继续往左查找。左旋转一次，然后递归调用 splay 函数。
-				node = rightRotation(node);
-				return splay(node, key);
 			}
-		} else if (key > node.key) {
-			if (node.right == null)
-				// 如果当前结点没有右儿子，说明不存在值为 key 的结点，将当前结点返回作为根。
+			if (key.compareTo(node.left.key) < 0) {
+				// 如果 key 小于根结点的左儿子，则对根结点的左儿子的左儿子进行 splay 调用
+				node.left.left = splay(node.left.left, key);
+				// 调用结束后对根节点进行一次右旋，根节点指向其原左儿子，目标结点（（原根节点的左儿子的左儿子）旋转到根节点的左儿子
+				//  A       B
+				// B   =>  C A
+				//C     目标结点是 C
+				node = rightRotation(node);
+			} else if (key.compareTo(node.left.key) > 0) {
+				// 如果 key 大于根结点的左儿子，则对根结点的左儿子的右儿子进行 splay 调用
+				node.left.right = splay(node.left.right, key);
+				if (node.left.right != null)
+					// 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根节点的左儿子
+					node.left = leftRotation(node.left);
+				//  A       A
+				// B   =>  C    C 是目标结点
+				//  C     B
+			}
+
+			// 最后如果根节点左儿子为空，则不存在 key 结点，返回当前根结点
+			if (node.left == null) {
 				return node;
-			else {
-				// 如果有，则说明还需继续往右查找。右旋转一次，然后递归调用 splay 函数。
+			} else {
+				// 如果左儿子非空，则说明 key 结点存在，并且就在根节点的左儿子，进行一次右旋将其旋转为新的根结点
+				return rightRotation(node);
+			}
+		} else if (key.compareTo(node.key) > 0) {
+			// 处理右侧，key > root.key
+			if (node.right == null) {
+				// 如果根结点没有右儿子，说明不存在值为 key 的结点，将当前结点返回作为根。
+				return node;
+			}
+			if (key.compareTo(node.right.key) < 0) {
+				// 如果 key 小于根结点的右儿子，则对根结点的右儿子的左儿子进行 splay 调用
+				node.right.left = splay(node.right.left, key);
+				if (node.right.left != null)
+					// 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根节点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
+					node.right = rightRotation(node.right);
+				// A        A
+				//  B  =>    C      C是目标结点
+				// C          B
+			} else if (key.compareTo(node.right.key) > 0) {
+				// 如果 key 大于根结点的右儿子，则对根结点的右儿子的右儿子进行 splay 调用
+				node.right.right = splay(node.right.right, key);
+				// 调用结束后对根结点进行一次左旋，根节点指向其右儿子，现在根节点的右儿子是目标结点（原根节点的右儿子的右儿子）
 				node = leftRotation(node);
-				return splay(node, key);
+				// A        B
+				//  B  =>  A C
+				//   C    C是目标结点
+			}
+
+			// 最后如果根节点右儿子为空，则不存在 key 结点，返回当前根结点
+			if (node.right == null) {
+				return node;
+			} else {
+				// 如果右儿子非空，则说明 key 结点存在，并且就在根节点的右儿子，进行一次左旋将其旋转为新的根结点
+				return leftRotation(node);
 			}
 		} else {
-			// 如果找到，将其返回作为根。我们之所以直接返回，是因为在查找的过程中我们已经对该结点往上的结点进行过旋转。
+			// 如果找到，直接返回
 			return node;
 		}
 	}
@@ -135,12 +193,13 @@ public class SplayTree {
 		}
 	}
 
-	private static class Node {
-		private int key;
-		private Node left;
-		private Node right;
+	private static final class Node<E> {
+		E key;
+		Node left;
+		Node right;
 
-		public Node() {
+		public Node(E key) {
+			this.key = key;
 			this.left = null;
 			this.right = null;
 		}

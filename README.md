@@ -16,7 +16,7 @@
 1. [完全二叉树](#完全二叉树)
 1. [二叉搜索（查找）树](#二叉搜索树)
 1. [AVL 树](#AVL树)
-1. 伸展树
+1. [伸展树](#伸展树)
 1. 哈夫曼树（最优二叉树）
 1. 红黑树
 1. 二叉堆
@@ -251,3 +251,94 @@ private Node rightLeftRotation(Node node) {
 }
 ```
 
+## 伸展树
+
+伸展树是特殊的二叉搜索树。它的特殊之处在于：当某个结点被访问时，伸展树会通过旋转使该结点成为树根。
+
+伸展树保证从空树开始任意连续 M 次对树的操作最多花费 O(M log N) 时间。
+
+伸展树最重要的操作是旋转：
+
+```java
+/**
+    * 算法思想参考了《数据结构与算法分析 —— C语言描述》中伸展树自底向上展开
+    * 以下注释中，
+    * <strong>根结点</strong>指的是调用 splay 时传入的 node 结点
+    * <strong>目标结点</strong>是程序中调用 splay 函数的语句返回的结点
+    */
+private Node splay(Node node, E key) {
+    if (node == null) {
+        // 如果结点为空，返回 null
+        return null;
+    }
+
+    if (key.compareTo(node.key) < 0) {
+        // 处理左侧，key < root.key
+        if (node.left == null) {
+            // 如果根结点没有左儿子，说明不存在值为 key 的结点，将根结点返回作为新的根。
+            return node;
+        }
+        if (key.compareTo(node.left.key) < 0) {
+            // 如果 key 小于根结点的左儿子，则对根结点的左儿子的左儿子进行 splay 调用
+            node.left.left = splay(node.left.left, key);
+            // 调用结束后对根节点进行一次右旋，根节点指向其原左儿子，目标结点（（原根节点的左儿子的左儿子）旋转到根节点的左儿子
+            //  A       B
+            // B   =>  C A
+            //C     目标结点是 C
+            node = rightRotation(node);
+        } else if (key.compareTo(node.left.key) > 0) {
+            // 如果 key 大于根结点的左儿子，则对根结点的左儿子的右儿子进行 splay 调用
+            node.left.right = splay(node.left.right, key);
+            if (node.left.right != null)
+                // 如果调用结束目标结点（根结点的左儿子的右儿子）非空，则在左儿子处进行一次左旋，将目标结点旋转到根节点的左儿子
+                node.left = leftRotation(node.left);
+            //  A       A
+            // B   =>  C    C 是目标结点
+            //  C     B
+        }
+
+        // 最后如果根节点左儿子为空，则不存在 key 结点，返回当前根结点
+        if (node.left == null) {
+            return node;
+        } else {
+            // 如果左儿子非空，则说明 key 结点存在，并且就在根节点的左儿子，进行一次右旋将其旋转为新的根结点
+            return rightRotation(node);
+        }
+    } else if (key.compareTo(node.key) > 0) {
+        // 处理右侧，key > root.key
+        if (node.right == null) {
+            // 如果根结点没有右儿子，说明不存在值为 key 的结点，将当前结点返回作为根。
+            return node;
+        }
+        if (key.compareTo(node.right.key) < 0) {
+            // 如果 key 小于根结点的右儿子，则对根结点的右儿子的左儿子进行 splay 调用
+            node.right.left = splay(node.right.left, key);
+            if (node.right.left != null)
+                // 如果调用结束并且目标结点（根结点的右儿子的左儿子）非空，则对根节点的右儿子进行一次右旋，将目标结点旋转为根结点的右儿子
+                node.right = rightRotation(node.right);
+            // A        A
+            //  B  =>    C      C是目标结点
+            // C          B
+        } else if (key.compareTo(node.right.key) > 0) {
+            // 如果 key 大于根结点的右儿子，则对根结点的右儿子的右儿子进行 splay 调用
+            node.right.right = splay(node.right.right, key);
+            // 调用结束后对根结点进行一次左旋，根节点指向其右儿子，现在根节点的右儿子是目标结点（原根节点的右儿子的右儿子）
+            node = leftRotation(node);
+            // A        B
+            //  B  =>  A C
+            //   C    C是目标结点
+        }
+
+        // 最后如果根节点右儿子为空，则不存在 key 结点，返回当前根结点
+        if (node.right == null) {
+            return node;
+        } else {
+            // 如果右儿子非空，则说明 key 结点存在，并且就在根节点的右儿子，进行一次左旋将其旋转为新的根结点
+            return leftRotation(node);
+        }
+    } else {
+        // 如果找到，直接返回
+        return node;
+    }
+}
+```

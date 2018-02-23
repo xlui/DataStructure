@@ -5,7 +5,41 @@ public class Main {
 //		testBinaryTree();
 //		testCompleteBinaryTree();
 //		testBinarySearchTree();
-		testAVLTree();
+//		testAVLTree();
+		testSplayTree();
+	}
+
+	private static void testSplayTree() {
+		SplayTree<Integer> tree = new SplayTree<>();
+		tree.insert(4);
+		// 4
+		tree.insert(2);
+		//  4  => 2
+		// 2       4
+		tree.insert(3);
+		// 2       2        3
+		//  4  =>   3   => 2 4
+		// 3         4
+		tree.insert(-7);
+		//   3      2       -7
+		//  2 4 =>-7 3  =>    2
+		//-7          4        3
+		//                      4
+
+		System.out.println("先序遍历：");
+		tree.preOrderTraversal();
+		System.out.println("\n中序遍历：");
+		tree.inOrderTraversal();
+		System.out.println("\n后序遍历：");
+		tree.postOrderTraversal();
+
+		tree.remove(2);
+		System.out.println("\n删除 2 后先序遍历：");
+		tree.preOrderTraversal();
+		System.out.println("\n删除 2 后中序遍历：");
+		tree.inOrderTraversal();
+		System.out.println("\n删除 2 后后序遍历：");
+		tree.postOrderTraversal();
 	}
 
 	private static void testAVLTree() throws Exception {
