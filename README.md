@@ -20,10 +20,10 @@
 1. [哈夫曼树（最优二叉树）](#哈夫曼树)
 1. [红黑树](#红黑树)
 1. [二叉堆](#二叉堆)
-1. 左倾堆
-1. 斜堆
-1. 二项堆
-1. 斐波那契堆
+1. [左倾堆](#左倾堆)
+1. [斜堆](#斜堆)
+1. [二项堆](#二项堆)
+1. [斐波那契堆](#斐波那契堆)
 1. 领接矩阵无向图
 1. 邻接表无向图
 1. 邻接矩阵有向图
@@ -422,3 +422,198 @@ Red-Black Tree，又称红黑树，是一种特殊的二叉搜索树。红黑树
 
 我的代码实现里统统采用**二叉堆的第一个元素在数组索引为 0** 的方式
 
+最大堆的添加：
+
+```java
+public void add(T t) {
+    this.heap.add(t);
+
+    int current = this.heap.size() - 1;
+    int parent = (current - 1) / 2;
+    while (current > 0) {
+        if (this.heap.get(parent).compareTo(t) < 0) {
+            // 父结点位置元素小于新插入结点元素的值
+            // 交换小的元素到新插入的位置
+            this.heap.set(current, this.heap.get(parent));
+            // current 移动到父结点的位置继续比较
+            current = parent;
+            // parent 移动到现在 current 的父结点
+            parent = (current - 1) / 2;
+        } else {
+            // 父结点位置元素大于等于新插入结点元素的值，无需移动
+            break;
+        }
+    }
+    this.heap.set(current, t);
+}
+```
+
+最大堆删除元素：
+
+```java
+public void remove(T t) {
+    if (this.heap.isEmpty()) {
+        // 堆为空，返回
+        return;
+    }
+
+    int index = this.heap.indexOf(t);
+    int size = this.heap.size();
+    if (-1 == index) {
+        // 堆中没有要删除的元素，返回
+        return;
+    }
+    // 用最后的元素填补要删除元素的位置
+    this.heap.set(index, this.heap.get(size - 1));
+    // 删除最后的元素
+    this.heap.remove(size - 1);
+
+    if (this.heap.size() > 1) {
+        // 进行调整
+        int left = 2 * index + 1;   // 左孩子
+        int end = this.heap.size() - 1;
+        T tmp = this.heap.get(index);
+        while (left <= end) {
+            if (left < end && this.heap.get(left).compareTo(this.heap.get(left + 1)) < 0) {
+                left++; // left 指向左右孩子中较大者
+            }
+            if (tmp.compareTo(this.heap.get(left)) < 0) {
+                // 填补的元素比左右孩子中较大者小
+                // 将较大者交换到填补位置
+                this.heap.set(index, this.heap.get(left));
+                // index 指向较大者位置
+                index = left;
+                // left 指向 index 的左儿子
+                left = 2 * index + 1;
+            } else {
+                // 调整结束
+                break;
+            }
+        }
+        this.heap.set(index, tmp);
+    }
+}
+```
+
+添加元素从下往上修正，删除元素从上往下修正。
+
+## 左倾堆
+
+左倾堆（leftist tree 或 leftist heap），又称为左偏树、左偏堆、最左堆等。它和二叉堆一样，都是优先队列的实现方式，当优先队列中涉及到**对两个优先队列进行合并**的问题时，二叉堆的效率就无法令人满意了，而左倾堆则可以很好的解决这类问题。
+
+左倾堆的结点除了和二叉堆一样具有左右儿子键值之外，还有一个属性：零距离。
+
+- 零距离（NPL，Null Path Length）：从一个结点到一个最近的不满结点的长度。
+- 不满结点：该结点左右孩子至少有一个为 NULL。
+
+叶结点的 NPL 为 0，NULL结点的 NPL 为 -1
+
+左倾堆有以下几个基本性质：
+
+1. 结点的键值小于或等于它的左右子结点的键值
+1. 结点的左孩子的 NPL >= 右孩子的 NPL
+1. 结点的 NPL = 它的右孩子的 NPL + 1
+
+左倾堆中最重要的操作是合并，其基本思想如下：
+
+1. 如果一个空左倾堆和一个非空左倾堆合并，返回非空左倾堆
+1. 如果两个左倾堆都非空，比较两个根结点，取较小堆的根结点为新的根结点。将较小堆的根结点的右孩子和较大堆进行合并
+1. 如果新堆的右孩子的 NPL > 左孩子的 NPL，则交换左右孩子
+1. 设置新堆的根结点的 NPL = 右孩子的 NPL + 1
+
+相关代码实现：
+
+```java
+private Node merge(Node<T> x, Node<T> y) {
+    if (x == null) {
+        return y;
+    }
+    if (y == null) {
+        return x;
+    }
+
+    // 合并 x 和 y 时，将 x 作为合并后的根
+    if (x.key.compareTo(y.key) > 0) {
+        Node node = x;
+        x = y;
+        y = node;
+    }
+
+    // 将 x 的右孩子和 y 合并，**合并后树的根**是 x 的右孩子
+    x.right = this.merge(x.right, y);
+
+    // 如果 x 的左孩子为空或者 x 的左孩子的 npl < 右孩子的 npl，交换左右孩子
+    if (x.left == null || x.left.npl < x.right.npl) {
+        Node node = x.left;
+        x.left = x.right;
+        x.right = node;
+    }
+    if (x.right == null || x.left == null) {
+        // 如果为叶子结点，则 npl 为 0
+        x.npl = 0;
+    } else {
+        // 否则，npl 为
+        x.npl = x.left.npl > x.right.npl ? x.right.npl + 1 : x.left.npl + 1;
+    }
+    return x;
+}
+```
+
+## 斜堆
+
+斜堆（skew heap）也叫自适应堆（self-adjusting heap），它是左倾堆的一个变种。和左倾堆一样，它通常也适用于优先队列；作为一种自适应的左倾堆，它的合并操作的时间复杂度也是 O(log N)。
+
+斜堆和左倾堆的差别是：
+
+1. 斜堆的结点没有零距离这个属性
+1. 斜堆的合并操作和左倾堆的合并算法不同
+
+斜堆的合并操作：
+
+1. 如果一个空斜堆与一个非空斜堆合并，返回非空斜堆
+1. 如果两个斜堆都非空，那么比较两个根节点，取较小堆的根节点为新的根结点。并将较小堆的根结点的右孩子和较大堆进行合并
+1. 合并后，交换新根结点的左孩子和右孩子
+
+第三步是斜堆和左倾堆合并操作的关键所在，如果是左倾堆，合并后要比较左右孩子的零距离大小，若左孩子零距离 < 右孩子零距离，则需要交换左右孩子。而斜堆无论任何情况都交换左右孩子。
+
+斜堆的合并算法：
+
+```java
+private Node merge(Node<T> x, Node<T> y) {
+    if (x == null) {
+        return y;
+    }
+    if (y == null) {
+        return x;
+    }
+
+    // 合并 x 和 y 时，将 x 作为合并后的树根
+    if (x.key.compareTo(y.key) > 0) {
+        Node<T> node = x;
+        x = y;
+        y = node;
+    }
+
+    // 将 x 的右孩子和 y 合并，合并后直接交换 x 的左右孩子
+    Node tmp = merge(x.right, y);
+    x.right = x.left;
+    x.left = tmp;
+
+    return x;
+}
+```
+
+## 二项堆
+
+二项堆是二项树的集合。在了解二项堆之前，先对二项树进行介绍。
+
+二项树是一种递归定义的有序树：
+
+1. 二项树 B0 只有一个结点
+1. 二项树 Bk 由两颗二项树 B(k-1) 组成，其中一颗树是另一棵树的最左孩子
+
+具体实现太过复杂 :cry:
+
+## 斐波那契堆
+
+:cry:

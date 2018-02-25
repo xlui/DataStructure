@@ -69,12 +69,12 @@ public class MaxHeap<T extends Comparable<T>> implements Heap<T> {
 				// 父结点位置元素小于新插入结点元素的值
 				// 交换小的元素到新插入的位置
 				this.heap.set(current, this.heap.get(parent));
-				// current 移动到父节点的位置继续比较
+				// current 移动到父结点的位置继续比较
 				current = parent;
-				// parent 移动到现在 current 的父节点
+				// parent 移动到现在 current 的父结点
 				parent = (current - 1) / 2;
 			} else {
-				// 父节点位置元素大于等于新插入结点元素的值，无需移动
+				// 父结点位置元素大于等于新插入结点元素的值，无需移动
 				break;
 			}
 		}

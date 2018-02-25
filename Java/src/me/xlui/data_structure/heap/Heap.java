@@ -7,7 +7,12 @@ public interface Heap<E> {
 
 	void add(E e);
 
-	void remove(E e);
+	default void remove(E e) {
+	}
+
+	default E remove() {
+		return null;
+	}
 
 	E peek();
 

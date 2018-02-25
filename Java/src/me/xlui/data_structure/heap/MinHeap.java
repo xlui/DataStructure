@@ -28,15 +28,15 @@ public class MinHeap<T extends Comparable<T>> implements Heap<T> {
 		int parent = (current - 1) / 2;
 		while (current > 0) {
 			if (this.heap.get(parent).compareTo(t) > 0) {
-				// 父结点位置元素小于新插入结点元素的值
-				// 交换小的元素到新插入的位置
+				// 父结点位置元素大于新插入结点元素的值
+				// 交换大的元素到新插入的位置
 				this.heap.set(current, this.heap.get(parent));
-				// current 移动到父节点的位置继续比较
+				// current 移动到父结点的位置继续比较
 				current = parent;
-				// parent 移动到现在 current 的父节点
+				// parent 移动到现在 current 的父结点
 				parent = (current - 1) / 2;
 			} else {
-				// 父节点位置元素大于等于新插入结点元素的值，无需移动
+				// 父结点位置元素小于等于新插入结点元素的值，无需移动
 				break;
 			}
 		}
@@ -68,13 +68,13 @@ public class MinHeap<T extends Comparable<T>> implements Heap<T> {
 			T tmp = this.heap.get(index);
 			while (left <= end) {
 				if (left < end && this.heap.get(left).compareTo(this.heap.get(left + 1)) > 0) {
-					left++; // left 指向左右孩子中较大者
+					left++; // left 指向左右孩子中较小者
 				}
 				if (tmp.compareTo(this.heap.get(left)) > 0) {
-					// 填补的元素比左右孩子中较大者小
-					// 将较大者交换到填补位置
+					// 填补的元素比左右孩子中较小者大
+					// 将较小者交换到填补位置
 					this.heap.set(index, this.heap.get(left));
-					// index 指向较大者位置
+					// index 指向较小者位置
 					index = left;
 					// left 指向 index 的左儿子
 					left = 2 * index + 1;
