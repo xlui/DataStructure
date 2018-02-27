@@ -24,10 +24,7 @@
 1. [斜堆](#斜堆)
 1. [二项堆](#二项堆)
 1. [斐波那契堆](#斐波那契堆)
-1. 领接矩阵无向图
-1. 邻接表无向图
-1. 邻接矩阵有向图
-1. 邻接表有向图
+1. [图](#图)
 
 算法：
 
@@ -617,3 +614,202 @@ private Node merge(Node<T> x, Node<T> y) {
 ## 斐波那契堆
 
 :cry:
+
+## 图
+
+图的几个概念：
+
+1. 图的种类：根据边是否有方向，将图分为无向图和有向图
+1. 邻接点：一条边上的两个顶点叫邻接点
+1. 度：在无向图中，某个顶点的度是邻接到该顶点的边的数目
+1. 路径：如果顶点 v1 和顶点 v2 之间存在一个顶点序列，则表示 v1 到 v2 是一条路径
+1. 路径长度：路径中边的数目
+1. 简单路径：一条路径上的顶点不重复出现
+1. 回路：路径的第一个顶点和最后一个顶点相同
+1. 简单回路：第一个顶点和最后一个顶点相同，且其他顶点不重复的路径
+1. 连通图：对于无向图，任意两个顶点之间都存在一条无向路径，则称无向图为连通图
+1. 连通分量：无向图的极大连通子图
+
+>主要有两个条件：
+>
+>1、极大顶点数：再加一个顶点就不连通了
+>
+>2、极大边数：包含子图中所有顶点相连的所有边
+
+图的存储：
+
+1. 邻接矩阵：容易判断两个顶点之间是否有边，耗费空间
+1. 邻接表：相对节省空间，但是不容易判断两个顶点之间是否有边
+
+相关算法（均基于领接矩阵无向图，其他图实现方式类似）：
+
+查找边的邻接点：
+
+```java
+private List<Integer> adjacent(int v) {
+    List<Integer> list = new ArrayList<>();
+    if (v < 0 || v > graph.vertices.length - 1) {
+        // v 的索引不合法
+        return list;
+    }
+
+    for (int i = 0; i < graph.vertexCount; i++) {
+        if (graph.edges[v][i] > 0) {
+            // 说明 v 到 i 有一条边
+            list.add(i);
+        }
+    }
+
+    return list;
+}
+```
+
+深度优先遍历：
+
+```java
+/**
+* 深度优先遍历 —— Depth First Search
+*
+* 和树的先序遍历类似。
+*
+* 它的思想：假设初始状态所有顶点均未被访问，则从某个顶点 v 出发，首先访问该顶点，然后依次从它的各个邻接点出发进行深度优先搜索，直至途中所有和 v 有路径连通的顶点都被访问到。若此时还有其他顶点没有被访问到，则另选一个未被访问的顶点作为起始点，重复上述过程，直至图中所有的顶点都被访问到。
+* 
+* 显示，深度优先遍历是一个递归的过程。
+*/
+public void DFS() {
+    boolean[] visited = new boolean[graph.vertexCount];
+
+    for (int i = 0; i < graph.vertexCount; i++) {
+        visited[i] = false;
+    }
+
+    System.out.println("Depth First Search: ");
+    for (int i = 0; i < graph.vertices.length; i++) {
+        if (!visited[i]) {
+            this.depthFirstSearch(i, visited);
+        }
+    }
+    System.out.println();
+}
+
+private void depthFirstSearch(int v, boolean[] visited) {
+    visited[v] = true;
+    System.out.print(graph.vertices[v] + " ");
+    for (Integer integer : this.adjacent(v)) {
+        if (!visited[integer]) {
+            this.depthFirstSearch(integer, visited);
+        }
+    }
+}
+```
+
+广度优先遍历：
+
+```java
+/**
+* 广度优先遍历 —— Breadth First Search
+* 
+* 外层 for 循环的作用是完全访问这种图（不连通图）：A-B   C-D
+* 内层使用队列，队列中的元素始终是访问过的，每次我们从队列中取出元素，访问其邻接点，然后再把访问过的邻接点放入队列。循环直到队列为空。
+*/
+public void BFS() {
+    boolean[] visited = new boolean[graph.vertexCount];
+    Queue<Integer> queue = new ArrayDeque<>();
+
+    for (int i = 0; i < graph.vertexCount; i++) {
+        visited[i] = false;
+    }
+
+    System.out.println("Breadth First Search: ");
+    for (int i = 0; i < graph.vertices.length; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            System.out.print(graph.vertices[i] + " ");
+            queue.add(i);
+        }
+
+        while (!queue.isEmpty()) {
+            int v = queue.poll();
+            for (Integer integer : this.adjacent(v)) {
+                if (!visited[integer]) {
+                    visited[integer] = true;
+                    System.out.print(graph.vertices[integer] + " ");
+                    queue.add(integer);
+                }
+            }
+        }
+    }
+}
+```
+
+拓扑排序：
+
+拓扑排序（Topological Order）是指，将一个有向无环图（Directed Acyclic Graph，简称 DAG）进行排序进而得到一个有序的线性序列。
+
+拓扑排序的基本步骤：
+
+1. 构造一个队列 Q 和拓扑排序结果队列 T
+1. 将所有没有依赖顶点的结点放入 Q
+1. 当 Q 中还有顶点的时候，执行下面的步骤：
+> 1. 从 Q 中取出一个顶点 M，放入 T
+> 1. 对 m 的每一个邻接点 n（m 是起点，n 是终点）:
+>>
+>> 去掉边 `<m, n>`
+>>
+>> 如果 n 没有依赖顶点，把 n 放入 Q 
+
+代码实现：
+
+```java
+public void topologicalSort() {
+    Map<String, Integer> inDegree = new HashMap<>();    // 入度
+    Queue<Integer> queue = new ArrayDeque<>();          // 保存入度为 0 的顶点
+    List<Integer> result = new ArrayList<>();           // 结果序列
+
+    // 计算每个顶点的入度
+    for (int i = 0; i < vertexCount; i++) {
+        Node node = vertices[i].firstNode;
+        while (node != null) {
+            // 初次初始化，使用 getOrDefault 来避免 NullPointerException
+            inDegree.put(node.vertex, inDegree.getOrDefault(node.vertex, 0) + 1);
+            node = node.next;
+        }
+    }
+
+    // 入度为 0 的顶点入队列
+    for (int i = 0; i < vertexCount; i++) {
+        // 因为可能存在入度为 0 的顶点，所以这里也是用 getOrDefault 在未设置值的时候返回默认值
+        if (inDegree.getOrDefault(vertices[i].vertex, 0) == 0) {
+            queue.add(i);
+        }
+    }
+
+    while (!queue.isEmpty()) {
+        int v = queue.poll();   // 弹出入度为 0 的顶点
+        result.add(v);          // 加入结果序列
+        Node node = vertices[v].firstNode;  // 获得其邻接序列
+
+        while (node != null) {
+            // 更新 v 邻接序列的入度
+            // v 的邻接序列的入度一定非 0，所以不需要设置 map 默认值
+            inDegree.put(node.vertex, inDegree.get(node.vertex) - 1);
+
+            if (inDegree.get(node.vertex) == 0) {
+                queue.add(valueOf(node.vertex));
+            }
+
+            node = node.next;
+        }
+    }
+
+    if (result.size() != vertexCount) {
+        System.out.println("Graph has a cycle!");
+        return;
+    }
+
+    for (Integer integer : result) {
+        System.out.print(vertices[integer].vertex + " ");
+    }
+    System.out.println();
+}
+```
