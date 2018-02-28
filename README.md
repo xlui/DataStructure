@@ -181,7 +181,7 @@ AVL 树中一个重要的操作就是旋转，在每次插入删除后都要检�
 
 AVL 树的高度：
 
-按照维基百科上的定义：树的高度为最大层次。即空二叉树的高度为 0，非空二叉树的高度为它的最大层次（根的层次为 1，根的子结点为第 2 层，依次类推）：
+按照维基百科上的定义：树的高度为最大层次。即空二叉树的高度为 0，非空二叉树的高度为根结点左右子树的最大高度 + 1：
 
 ```java
 private int height(Node node) {
@@ -643,7 +643,7 @@ private Node merge(Node<T> x, Node<T> y) {
 
 相关算法（均基于领接矩阵无向图，其他图实现方式类似）：
 
-查找边的邻接点：
+### 查找边的邻接点：
 
 ```java
 private List<Integer> adjacent(int v) {
@@ -664,7 +664,7 @@ private List<Integer> adjacent(int v) {
 }
 ```
 
-深度优先遍历：
+### 深度优先遍历：
 
 ```java
 /**
@@ -703,7 +703,7 @@ private void depthFirstSearch(int v, boolean[] visited) {
 }
 ```
 
-广度优先遍历：
+### 广度优先遍历：
 
 ```java
 /**
@@ -742,7 +742,7 @@ public void BFS() {
 }
 ```
 
-拓扑排序：
+### 拓扑排序：
 
 拓扑排序（Topological Order）是指，将一个有向无环图（Directed Acyclic Graph，简称 DAG）进行排序进而得到一个有序的线性序列。
 
@@ -758,7 +758,7 @@ public void BFS() {
 >>
 >> 如果 n 没有依赖顶点，把 n 放入 Q 
 
-代码实现：
+邻接表有向图中代码实现：
 
 ```java
 public void topologicalSort() {
@@ -811,5 +811,72 @@ public void topologicalSort() {
         System.out.print(vertices[integer].vertex + " ");
     }
     System.out.println();
+}
+```
+
+### Dijkstra 算法：
+
+Dijkstra 算法是典型的最短路径算法，用于计算一个节点到其他节点的最短路径。它的主要特点是以起始点为中心向外层层层扩展（广度优先算法思想），直到扩展到终点为止。
+
+基本思想：
+
+通过 Dijkstra 算法计算最短路径的时候需要指定起点 s。
+
+同时，引进两个集合 S 和 U。S 的作用是记录已求出最短路径的顶点（以及相应的最短路径长度），U 则是记录还未求出最短路径的顶点（以及该顶点到起点 s 的距离）。
+
+初始时，S 中只有 s；U 中是除 s 之外的顶点，并且 U 中顶点的路径是 “起点 s 到该顶点的路径”。然后，从 U 中找出路径最短的顶点，并将其加入 S 中；接着，更新 U 中的顶点和顶点对应的路径。然后，再从 U 中找出路径最短的顶点，并将其加入 S 中；接着，...。重复该操作，直到遍历完所有顶点
+
+操作步骤：
+
+1. 初始时，S 只包含 s，U 包含除 s 之外的其他定点，且 U 中顶点的距离为 “起点 s 到该顶点的距离”（例如：U 中顶点 v 的距离为 (s, v) 的长度。如果 s 和 v 不相邻，则 v 的距离为 ∞）。
+1. 从 U 中选出“距离最短的顶点 k”，并将顶点 k 加入 S 中，同时从 U 中移除 k。
+1. 更新 U 中各个顶点到起点 s 的距离。之所以更新，是因为上一步中确定了 k 是最短距离，从而可以利用 k 来更新其他顶点的距离。
+1. 重复步骤 2 和 3，直到遍历完所有顶点。
+
+邻接矩阵无向图的代码实现：
+
+```java
+public void Dijkstra(int v) {
+    boolean[] flag = new boolean[this.vertexCount]; // flag[i] = true 表示顶点 v 到顶点 i 的最短路径已经成功找到
+    int[] distance = new int[this.vertexCount];     // 长度数组，distance[i] 是顶点 v 到顶点 i 的最短路径长度
+    int k = 0;  // k 位置顶点是已获得的最短路径
+
+    for (int i = 0; i < this.vertexCount; i++) {
+        flag[i] = false;            // 顶点 i 的最短路径还没找到
+        distance[i] = edges[v][i];  // 顶点 i 的最短路径为顶点 v 到顶点 i 的权，权值的默认值为 Integer.MAX_VALUE
+    }
+
+    // 对顶点 v 进行初始化
+    flag[v] = true;
+    distance[v] = 0;
+    System.out.println("Dijkstra: ");
+    System.out.println(vertices[v] + " 到 " + vertices[v] + " 的最短路径是：" + distance[v]);
+
+    // 进行 vertexCount - 1 次循环
+    for (int i = 1; i < this.vertexCount; i++) {
+        int min = INF;
+        // 获取未找到最短路径顶点中最小值及其索引
+        for (int j = 0; j < this.vertexCount; j++) {
+            if (!flag[j] && distance[j] < min) {
+                min = distance[j];
+                k = j;
+            }
+        }
+
+        // 标记顶点 k 为已经获得的最短路径
+        flag[k] = true;
+        System.out.println(vertices[v] + " 到 " + vertices[k] + " 的最短路径是：" + distance[k]);
+
+        // 修正未获得最短路径的顶点集合中的路径长度
+        for (int j = 0; j < this.vertexCount; j++) {
+            // tmp 此处的判断是：如果从顶点 k 到顶点 j 有边，那么暂存 min+边的权值
+            int tmp = (edges[k][j] == INF ? INF : (min + edges[k][j]));
+            if (!flag[j] && tmp < distance[j]) {
+                // 如果 tmp 比 distance[j] 大，说明 j 到 v 之间有较短路径
+                // 如果 tmp 比 distance[j] 小，说明需要更新 distance[j]
+                distance[j] = tmp;
+            }
+        }
+    }
 }
 ```

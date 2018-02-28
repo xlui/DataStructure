@@ -10,6 +10,7 @@ import java.util.Queue;
  */
 public class BaseMatrixGraph {
 	private static final int DEFAULT_VERTEX_COUNT = 100;
+	private static final int INF = Integer.MAX_VALUE;
 
 	String vertices[];
 	int edges[][];
@@ -98,6 +99,7 @@ public class BaseMatrixGraph {
 				}
 			}
 		}
+		System.out.println();
 	}
 
 
@@ -110,7 +112,7 @@ public class BaseMatrixGraph {
 		}
 
 		for (int i = 0; i < this.vertexCount; i++) {
-			if (this.edges[v][i] > 0) {
+			if (this.edges[v][i] != INF && this.edges[v][i] != 0) {
 				// 说明 v 到 i 有一条边
 				list.add(i);
 			}

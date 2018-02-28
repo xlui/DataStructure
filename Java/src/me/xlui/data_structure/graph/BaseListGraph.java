@@ -37,6 +37,7 @@ public class BaseListGraph {
 				this.depthFirstSearch(i, visited);
 			}
 		}
+		System.out.println();
 	}
 
 	private void depthFirstSearch(int v, boolean[] visited) {

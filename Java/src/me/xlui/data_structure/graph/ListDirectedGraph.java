@@ -118,6 +118,7 @@ public class ListDirectedGraph extends BaseListGraph {
 			return;
 		}
 
+		System.out.println("Topological Sort:");
 		for (Integer integer : result) {
 			System.out.print(vertices[integer].vertex + " ");
 		}
