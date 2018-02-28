@@ -28,9 +28,9 @@
 
 算法：
 
-1. 最大子序列和
-1. 二分查找
-1. 辗转相除法
+1. [最大子序列和](#最大子序列和)
+1. [二分查找](#二分查找)
+1. [辗转相除法](#辗转相除法)
 1. 排序
 1. 散列
 
@@ -1034,3 +1034,195 @@ public void Prim(int start) {
     System.out.println();
 }
 ```
+
+## 最大子序列和
+
+给定整数 A1, A2, ..., An(可能有负数)，求 ∑(k=i, j)Ak 的最大值（为方便起见，如果所有整数均为负数，则最大子序列和为 0）
+
+### 算法一 —— 遍历所有子序列
+
+```java
+public static int maxSubSequenceSum(int[] sequence) {
+    int max = 0, this_sum = 0;
+
+    for (int i = 0; i < sequence.length; i++) {
+        for (int j = i; j < sequence.length; j++) {
+            this_sum = 0;
+
+            for (int k = i; k <= j; k++) {
+                this_sum += sequence[k];
+            }
+
+            if (this_sum > max) {
+                max = this_sum;
+            }
+        }
+    }
+
+    return max;
+}
+```
+
+算法的时间复杂度 O(N³)
+
+### 算法二 —— 对算法一稍微改进
+
+```java
+public static int maxSubSequenceSum(int[] sequence) {
+    int max = 0, this_sum = 0;
+
+    for (int i = 0; i < sequence.length; i++) {
+        this_sum = 0;
+        // 相对一算法 1 的改进，直接计算和，没必要再遍历一次
+        for (int j = i; j < sequence.length; j++) {
+            this_sum += sequence[j];
+
+            if (this_sum > max) {
+                max = this_sum;
+            }
+        }
+    }
+
+    return max;
+}
+```
+
+算法的时间复杂度：O(N²)
+
+### 算法三 —— 分治
+
+分治算法，将序列分为左右两个子序列，分别计算 左、右、中间 的子序列和，比较最大的并返回。
+
+```java
+public static int maxSubSequenceSum(int[] sequence, int left, int right) {
+    int center;
+    int maxLeftSum, maxRightSum;
+    int leftBorderSum, rightBorderSum;
+    int maxLeftBorderSum, maxRightBorderSum;
+
+    if (left == right) {
+        if (sequence[left] > 0) {
+            return sequence[left];
+        } else {
+            return 0;
+        }
+    }
+
+    center = left / 2 + right / 2;
+    // 计算左侧的最大子序列和
+    maxLeftSum = maxSubSequenceSum(sequence, left, center);
+    // 计算右侧的最大子序列和
+    maxRightSum = maxSubSequenceSum(sequence, center + 1, right);
+
+    // 计算包括中间的最大子序列和
+    leftBorderSum = 0;
+    maxLeftBorderSum = 0;
+    for (int i = center; i >= left; i--) {
+        leftBorderSum += sequence[i];
+
+        if (leftBorderSum > maxLeftBorderSum) {
+            maxLeftBorderSum  = leftBorderSum;
+        }
+    }
+
+    rightBorderSum = 0;
+    maxRightBorderSum = 0;
+    for (int i = center + 1; i < right; i++) {
+        rightBorderSum += sequence[i];
+
+        if (rightBorderSum > maxRightBorderSum) {
+            maxRightBorderSum = rightBorderSum;
+        }
+    }
+
+    return Math.max(Math.max(maxLeftSum, maxRightSum), maxLeftBorderSum + maxRightBorderSum);
+}
+```
+
+算法的时间复杂度 O(N log N)
+
+### 算法四 —— 联机算法
+
+只对数据进行一次扫描即可。
+
+```java
+public static int maxSubSequenceSum(int[] sequence) {
+    int max = 0, this_sum = 0;
+
+    for (int i : sequence) {
+        this_sum += i;
+
+        if (this_sum > max) {
+            max = this_sum;
+        } else if (this_sum < 0) {
+            this_sum = 0;
+        }
+    }
+
+    return max;
+}
+```
+
+算法的时间复杂度 O(N)
+
+## 二分查找
+
+对于一个排序好的序列，如果要查找其中是否有某个元素，遍历的做法是十分低效的，我们可以使用二分查找法。
+
+二分查找的思想是每次比较序列的中间值，大于中间值就比较右半序列，小于就比较左半序列，直到找到元素或者找不到循环退出。
+
+```java
+public class BinarySearch {
+    public static void main(String[] args) {
+        int[] sequence = new int[]{1, 3, 4, 5, 6, 7, 9, 14, 17};
+        System.out.println(binarySearch(sequence, 4));
+    }
+
+    public static int binarySearch(int[] sequence, int n) {
+        int low = 0, high = sequence.length - 1;
+        int mid;
+
+        while (low <= high) {
+            mid = (low + high) / 2;
+            System.out.println("Try " + sequence[mid]);
+            if (n < sequence[mid]) {
+                high = mid;
+            } else if (n > sequence[mid]) {
+                low = mid + 1;
+            } else {
+                return mid;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+算法的时间复杂度 O(log N)
+
+## 辗转相除法
+
+辗转相除法，又名欧几里得算法，是计算两个数的最大公约数的简便算法
+
+```java
+public class EuclidGCD {
+    public static void main(String[] args) {
+        System.out.println(euclid(1989, 1590));	// 3
+    }
+
+    public static int euclid(int number1, int number2) {
+        // 欧几里得 -- 辗转相除法，求两个数的最大公约数
+        int remainder;
+
+        while (number2 > 0) {
+            remainder = number1 % number2;
+            number1 = number2;
+            number2 = remainder;
+        }
+
+        return number1;
+    }
+}
+```
+
+算法的时间复杂度 O(log N)
