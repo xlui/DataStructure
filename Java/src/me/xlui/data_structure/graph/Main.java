@@ -6,9 +6,9 @@ public class Main {
 	/*
 	 * 默认的无向图       默认的有向图      Dijkstra 图
 	 *                                   B -- C
-	 *  A-F-G-E         B->A->G         /    /|\
+	 *  A-F-G-E         B->A->G         / \  /|\
 	 *  |＼              |    ︿        A - F  | D
-	 *  C--D            ﹀     |        \ /  \ |
+	 *  C--D            ﹀     |        \ /  \ |/
 	 *  |               D->F<-C         G --- E
 	 *  B               |
 	 *                  ﹀
@@ -101,7 +101,17 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		testDijkstra();
+		testPrim();
+	}
+
+	private static void testPrim() {
+		MatrixUnDirectedGraph graph = new MatrixUnDirectedGraph(dijkstraVertices, dijkstraEdges);
+		graph.Prim(gValueOf("A"));
+	}
+
+	private static void testKruskal() {
+		MatrixUnDirectedGraph graph = new MatrixUnDirectedGraph(dijkstraVertices, dijkstraEdges);
+		graph.Kruskal();
 	}
 
 	private static void testDijkstra() {

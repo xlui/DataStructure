@@ -1,6 +1,6 @@
 package me.xlui.data_structure.graph;
 
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * 邻接矩阵无向图
@@ -127,6 +127,133 @@ public class MatrixUnDirectedGraph extends BaseMatrixGraph {
 					distance[j] = tmp;
 				}
 			}
+		}
+	}
+
+
+	/**
+	 * Kruskal 最小生成树
+	 */
+	public void Kruskal() {
+		int[] vEnds = new int[this.edgeCount];
+		// 使用优先队列保存边，创建优先队列时设置比较器为从小到大
+		PriorityQueue<Edge> edges = new PriorityQueue<>(Comparator.comparing(e -> e.weight));
+		// 结果列表
+		List<Edge> edgeList = new ArrayList<>();
+		int resultWeight = 0;
+
+		// 初始化边
+		for (int i = 0; i < this.vertexCount; i++) {
+			for (int j = 0; j < i; j++) {
+				if (this.edges[i][j] != INF) {
+					// 因为创建边的时候 i 为第一下标，j 为第二下标，所以数组中应该是
+					//   A B C
+					// A
+					// B
+					// C
+					// ...
+					// 因为使用邻接矩阵保存，为避免加入队列的时候出现一条边加入两次的情况，内次循环只循环 i 次
+					// 但是如果循环 i 次，会造成只访问了左下半部分元素，如果我们需要 A B 形式而不是 B A 形式的边，我们必须在保存的时候交换 i j 位置
+					edges.add(new Edge(j, i, this.edges[i][j]));
+				}
+			}
+		}
+
+		Edge edge;
+		int start, end; // 边开始顶点位置，结束顶点位置
+		int sEnd, eEnd; // 开始顶点的终点，结束顶点的终点
+		while (!edges.isEmpty()) {
+			edge = edges.poll();    // 权值最小的边出队列
+			start = edge.start;
+			end = edge.end;
+
+			sEnd = this.getEnd(vEnds, start);   // 获取 start 的终点
+			eEnd = this.getEnd(vEnds, end);     // 获取 end 的终点
+
+			if (sEnd != eEnd) {                 // 如果两个终点相同，则说明可能产生回路
+				vEnds[sEnd] = eEnd;
+				edgeList.add(edge);
+				resultWeight += edge.weight;
+			}
+		}
+
+		System.out.println("Kruskal 最小生成树的权值：" + resultWeight);
+		System.out.println("Kruskal 最小生成树的边: ");
+		for (Edge edge1 : edgeList) {
+			System.out.println(this.vertices[edge1.start] + ", " + this.vertices[edge1.end]);
+		}
+	}
+
+	// 获取起点 i 的终点
+	private int getEnd(int[] vEnds, int i) {
+		while (vEnds[i] != 0) {
+			i = vEnds[i];
+		}
+		return i;
+	}
+
+	/**
+	 * Prim 最小生成树
+	 */
+	public void Prim(int start) {
+		int[] weight = new int[vertexCount];    // 权值数组，权值为 0 视为已加入最小生成树
+		List<String> list = new ArrayList<>();
+		int resultWeight = 0;
+
+		// prim 最小生成树的第一个数是 start 顶点
+		list.add(this.vertices[start]);
+		// 初始化权值列表
+		System.arraycopy(edges[start], 0, weight, 0, vertexCount);
+		// 初始化顶点 start 的权值
+		weight[start] = 0;
+
+		for (int i = 0; i < vertexCount; i++) {
+			if (i == start) {
+				// 不需要再处理 start 顶点
+				continue;
+			}
+
+			int k = 0, min = INF;
+			// 找到未被加入最小生成树的顶点中权值最小的顶点
+			for (int j = 0; j < vertexCount; j++) {
+				if (weight[j] != 0 && weight[j] < min) {
+					// weight[j] == 0 代表着 j 已经加入最小生成树
+					min = weight[j];
+					k = j;
+				}
+			}
+
+			// 将第 k 个顶点加入最小生成树的结果数组
+			list.add(this.vertices[k]);
+			// 将 k 顶点的权值标记为 0，意味着第 k 个顶点已经加入最小生成树
+			weight[k] = 0;
+			resultWeight += min;
+
+			// 更新剩下顶点的权值
+			for (int j = 0; j < vertexCount; j++) {
+				if (weight[j] != 0 && weight[j] > this.edges[k][j]) {
+					weight[j] = this.edges[k][j];
+				}
+			}
+		}
+
+		System.out.println("Prim 最小生成树的权值：" + resultWeight);
+		System.out.println("Prim 最小生成树的边：");
+		for (String s : list) {
+			System.out.print(s + " ");
+		}
+		System.out.println();
+	}
+
+	private static class Edge {
+		int start;
+		int end;
+		int weight;
+
+		public Edge(int start, int end, int weight) {
+			this.start = start;
+			this.end = end;
+			this.weight = weight;
 		}
 	}
 }
