@@ -18,14 +18,19 @@ public class ReverseSingleLinkedList {
 	}
 
 	public Node reverseByRecursion(Node head) {
-		if (head == null || head.next == null)
+		if (head == null || head.next == null) {
 			return head;
+		}
 
-		Node node = reverseByRecursion(head.next);
-
-		head.next.next = head;
+		Node node = head.next;
+		// 将 head 结点断开
 		head.next = null;
-
-		return node;
+		// 对剩下的结点递归调用反转
+		Node reverse = reverseByRecursion(node);
+		// 将 head 结点接到转置后链表的末尾
+		node.next = head;
+		// 返回转置后的链表
+		return reverse;
 	}
+
 }

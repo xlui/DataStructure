@@ -48,9 +48,9 @@
 
 一些问题：
 
-1. O(1) 时间内删除链表结点
-1. 判断链表中是否有环
-1. 单链表转置
+1. [O(1) 时间内删除链表结点](#删除链表结点)
+1. [判断链表中是否有环](#判断链表中是否有环)
+1. [单链表转置](#单链表转置)
 
 ## 数组
 
@@ -576,7 +576,7 @@ private Node merge(Node<T> x, Node<T> y) {
 斜堆的合并操作：
 
 1. 如果一个空斜堆与一个非空斜堆合并，返回非空斜堆
-1. 如果两个斜堆都非空，那么比较两个根节点，取较小堆的根节点为新的根结点。并将较小堆的根结点的右孩子和较大堆进行合并
+1. 如果两个斜堆都非空，那么比较两个根结点，取较小堆的根结点为新的根结点。并将较小堆的根结点的右孩子和较大堆进行合并
 1. 合并后，交换新根结点的左孩子和右孩子
 
 第三步是斜堆和左倾堆合并操作的关键所在，如果是左倾堆，合并后要比较左右孩子的零距离大小，若左孩子零距离 < 右孩子零距离，则需要交换左右孩子。而斜堆无论任何情况都交换左右孩子。
@@ -824,7 +824,7 @@ public void topologicalSort() {
 
 ### Dijkstra 算法：
 
-Dijkstra 算法是典型的最短路径算法，用于计算一个节点到其他节点的最短路径。它的主要特点是以起始点为中心向外层层层扩展（广度优先算法思想），直到扩展到终点为止。
+Dijkstra 算法是典型的最短路径算法，用于计算一个结点到其他结点的最短路径。它的主要特点是以起始点为中心向外层层层扩展（广度优先算法思想），直到扩展到终点为止。
 
 基本思想：
 
@@ -903,7 +903,7 @@ Kruskal 算法是用来求加权连通图的最小生成树的算法。
 
 具体做法：
 
-首先构造一个只含 n 个节点的森林，然后依权值大小从连通网中选择边加入森林中，并使森林不产生回路，直至森林变成一棵树为止。
+首先构造一个只含 n 个结点的森林，然后依权值大小从连通网中选择边加入森林中，并使森林不产生回路，直至森林变成一棵树为止。
 
 算法分析：
 
@@ -1789,3 +1789,95 @@ public enum EnumSingleton {
 ```
 
 特点：利用 Enum 语法糖，不仅会禁止利用反射重复创建实例，还保证线程安全。唯一的缺点是并非是用懒加载。
+
+## 删除链表结点
+
+给定链表的头指针和一个结点指针，在 O（1）的时间删除该结点
+
+思路：使用下一个结点的数据覆盖要删除的结点，然后删除下一个结点
+
+```java
+public void deleteNode(Node node) {
+    assert node != null;
+    assert node.next != null; // 不能是尾结点
+
+    Node nextNode = node.next;
+    node.data = nextNode.data;
+    node.next = nextNode.next;
+}
+```
+
+## 判断链表中是否有环
+
+使用快慢指针：
+
+1. 如果遇到 null，则退出，说明没有环
+1. 如果**快指针遇到慢指针**或者**快指针跑到慢指针后面**，说明有环
+
+```java
+public boolean hasCircle(Node head) {
+    Node fast = head;
+    Node slow = head;
+
+    while (true) {
+        if (fast == null || fast.next == null) {
+            // 如果链表中有空，即到尽头
+            return false;
+        } else {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        if (fast == slow || fast.next == slow) {
+            // 如果快慢指针相遇或者快指针跑到慢指针后边，说明有环
+            return true;
+        }
+    }
+}
+```
+
+## 单链表转置
+
+循环方式：
+
+```java
+public Node reverseByLoop(Node head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    Node ret = null, next = null;
+    while (head != null) {
+        next = head.next;   // 保存下一个结点的位置
+        head.next = ret;    // 现在的结点接到新链表的头部
+        ret = head;         // 重置新链表的头部指针
+        head = next;        // head 往后移动
+    }
+
+    return ret;
+}
+```
+
+思路是：每次断开一个结点，接到新链表上。
+
+递归方式：
+
+```java
+public Node reverseByRecursion(Node head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    Node node = head.next;
+    // 将 head 结点断开
+    head.next = null;
+    // 对剩下的结点递归调用反转
+    Node reverse = reverseByRecursion(node);
+    // 将 head 结点接到转置后链表的末尾
+    node.next = head;
+    // 返回转置后的链表
+    return reverse;
+}
+```
+
+思路是：每次断开头结点，对剩下的结点递归调用转置函数，然后再将头结点接到转置后的链表末尾。
