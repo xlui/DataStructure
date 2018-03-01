@@ -17,6 +17,7 @@ public class ConcurrentSingleton {
 	public static ConcurrentSingleton getInstance() {
 		if (instance == null) {
 			synchronized (ConcurrentSingleton.class) {
+				// 注意，要锁住整个类
 				if (instance == null) {
 					instance = new ConcurrentSingleton();
 				}
