@@ -25,6 +25,7 @@
 1. [二项堆](#二项堆)
 1. [斐波那契堆](#斐波那契堆)
 1. [图](#图)
+1. [容器](#容器)
 
 算法：
 
@@ -53,6 +54,10 @@
 1. [单链表转置](#单链表转置)
 1. [中缀表达式转后缀表达式](#中缀表达式转后缀表达式)
 1. [后缀表达式求值](#后缀表达式求值)
+
+协议：
+
+[MIT](LICENSE)
 
 ## 数组
 
@@ -1045,6 +1050,228 @@ public void Prim(int start) {
 }
 ```
 
+## 容器
+
+![](https://images0.cnblogs.com/blog/497634/201309/08171028-a5e372741b18431591bb577b1e1c95e6.jpg)
+
+### Collection
+
+Collection 是一个接口，是高度抽象出来的集合，它包括了集合的基本操作和属性。
+
+Collection 包括了 List 和 Set 两大分支：
+
+1. List 是一个有序的序列，每一个元素都有它的索引。List 的实现类有 LinkedList，ArrayList，Vector，Stack
+1. Set 是一个不允许有重复元素的集合。Set 的实现类有 HashSet 和 TreeSet。HashSet 依赖于 HashMap，它实际上通过 HashMap 实现；TreeSet 依赖与 TreeMap，它实际上通过 TreeMap 实现。
+
+### Map
+
+Map 是一个映射接口，即 key-value 键值对。Map 中的每一个元素包含 “一个 key” 和 “key 对应的 value”。
+
+AbstractMap 是一个抽象类，它实现了 Map 接口中的大部分 API。而 HashMap，TreeMap，WeakHashMap 都是继承于 AbstractMap。
+
+HashTable 虽然继承于 Dictionary，但它实现了 Map 接口。
+
+### Iterator
+
+Iterator 是遍历集合的工具，即我们通常通过 Iterator 迭代器来遍历集合。Collection 依赖于 Iterator，所有 Collection 的实现类都要实现 iterator() 函数，返回一个 Iterator 对象。
+
+ListIterator 是专门为遍历 List 而存在的。
+
+### Enumeration
+
+Enumeration 的作用和 Iterator 一样，也是遍历集合。但是 Enumeration 的功能要比 Iterator 少。
+
+### Arrays 和 Collections
+
+Arrays 和 Collections 是用来操作数组、集合的两个工具类。
+
+### List
+
+List 是有序的序列，List 中可以有重复的元素。
+
+### Set
+
+Set 是数学概念中的集合，Set 中没有重复元素。
+
+### ArrayList
+
+ArrayList 是一个数组队列，相当于**动态数组**。与 Java 中的数组相比，它的容量能动态增长，初始值为 **10**。它继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 这些接口。
+
+和 Vector 不同，**ArrayList 的操作不是线程安全的**！所以，建议在单线程中才使用 ArrayList，而在多线程中可以选择 Vector 或者 CopyOnWriteArrayList。
+
+当 ArrayList 的容量不足以容纳全部元素时，ArrayList 会重新设置容量(扩大三倍)：
+
+```java
+int newCapacity = oldCapacity + (oldCapacity >> 1);
+```
+
+### Iterator 的 fail-fast 机制
+
+fail-fast 是 Java 集合（Collection）中的一种错误机制。当多个线程对同一集合的内容进行操作时，就可能产生 fail-fast 事件。
+
+例如：当某一个线程A通过iterator去遍历某集合的过程中，若该集合的内容被其他线程所改变了；那么线程A访问集合时，就会抛出ConcurrentModificationException 异常，产生 fail-fast 事件。
+
+ArrayList 每次调用 next() 和 remove() 等方法时，都会执行 checkForComodification()：
+
+```java
+if (expectedModCount != ArrayList.this.modCount)
+    throw new ConcurrentModificationException();
+```
+
+如果 modCount 不等于 expectedModCount，则抛出 ConcurrentModificationException 异常，产生 fail-fast 事件。
+
+而 `java.util.concurrent.CopyOnWriteArrayList` 则使用了 volatile 关键字保证内存一致性。
+
+fail-fast 机制，是一种错误检测机制。它只能被用来检测错误，因为 JDK 并不保证 fail-fast 机制一定会发生。若在多线程环境下使用 fail-fast 机制的集合，建议使用 `java.util.concurrent` 包下的类去取代 `java.util` 包下的类。
+
+### LinkedList
+
+LinkedList 是一个继承于 AbstractSequentialList 的双向链表。它也可以被当作堆栈、队列、或双端队列进行操作。LinkedList 实现了 List, Deque, Cloneable, java.io.Serializable 接口。
+
+LinkedList 是非同步的。
+
+LinkedList 实际上是通过双向链表实现的，它包含一个非常重要的内部类 Entry。Entry 是双向链表结点所对应的数据结构。
+
+### Vector
+
+Vector 是矢量队列，继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 接口。
+
+和 ArrayList 不同，Vector 中的操作是线程安全的。
+
+Vector 默认容量大小为 10。
+
+当 Vector 的容量不够时，会根据增长因子的情况增加容量：
+
+```java
+int newCapacity = oldCapacity + ((capacityIncrement > 0) ? 
+capacityIncrement : oldCapacity);
+```
+
+### Stack
+
+Stack 是栈，它的特性是：**先进后出(FILO, First In Last Out)**
+
+Stack 继承于 Vector 的，而 Vector 是通过数组实现的，这就意味着，**Stack 也是通过数组实现的，而非链表**。当然，我们也可以把 LinkedList 当作栈来使用。
+
+### List 总结
+
+如果涉及到 “栈”、“队列”、“链表” 等操作，应该考虑 List，具体选择哪个 List，以下有几条标准：
+
+1. 对于需要快速插入、删除元素，应该使用 LinkedList
+1. 对于需要快速随机访问的元素，应该使用 ArrayList
+1. 对于“单线程环境”或者“多线程环境，但是 List 只会被单个线程操作”，应该使用非同步的类（如 ArrayList）
+1. 对于“多线程环境，且 List 可能同时被多个线程操作”，此时应该使用同步的类（如 Vector）
+
+### HashMap
+
+HashMap 继承自 AbstractMap，实现了 Map, Cloneable, Serializable 接口。
+
+HashMap 的实现是不同步的，这意味着它不是线程安全的。
+
+HashMap 的 key、value 都可以为 null。
+
+HashMap 中的映射不是有序的。
+
+HashMap 中有两个参数影响其性能：**初始容量**和**加载因子**。初始容量是哈希表在创建时的容量。加载因子是哈希表在其容量自动增加之前可以达到多满的一种尺度。通常，**默认的加载因子是 0.75**
+
+### Hashtable
+
+和 HashMap 一样，Hashtable 也是一个散列表，它存储的内容是键值对（key-value）映射。
+
+Hashtable 继承于 Dictionary，实现了 Map, Cloneable, java.io.Serializable 接口。
+
+Hashtable 的函数都是同步的，这意味着它是线程安全的。
+
+Hashtable 的 key、value 都不可以为 null。
+
+Hashtable 中的映射不是有序的。
+
+和 HashMap 一样，Hashtable 中也有两个参数影响其性能：**初始容量**和**加载因子**。加载因子默认是 0.75。
+
+### TreeMap
+
+TreeMap 是一个有序的 key-value 集合，它的内部是通过**红黑树**实现的。
+
+TreeMap 继承于 AbstractMap，实现了 NavigableMap, Cloneable, java.io.Serializable 接口。实现 NavigableMap 意味着它支持一系列的导航方法。
+
+TreeMap 是基于**红黑树（Red-Black Tree）**实现。该映射根据其**键的自然顺序**进行排序，或者根据**创建映射时提供的 Comparator 进行排序**。
+
+TreeMap 是非同步的。
+
+### WeakHashMap
+
+WeakHashMap 继承于 AbstractMap，实现了 Map 接口。
+
+和 HashMap 一样，WeakHashMap 也是一个散列表，它存储的内容也是键值对映射，而且键和值都可以是 null。
+
+不过，WeakHashMap 中的键是**弱键**。在 WeakHashMap 中，当某个键不再正常使用时，会被从 WeakHashMap 中自动移除。更准确的说，对于一个给定的键，其映射的存在并不组织垃圾回收器对其键的丢弃，这就是该键称为可终止的，被终止，然后被回收。某个键被终止时，它对应的键值对也就从映射中有效地移除了。
+
+**弱键**的原理，大致上是通过**WeakReference和ReferenceQueue**实现的。WeakHashMap 的 key 时弱键，即是 WeakReference 类型的；ReferenceQueue 是一个队列，它会保存被 GC 回收的弱键。实现步骤是：
+
+1. 新建 WeakHashMap，将键值对添加到 WeakHashMap 中。
+1. 当**某弱键不再被其他对象引用，并被GC回收时**，在 GC 回收该弱键时，这个弱键也同样会被添加到 ReferenceQueue 队列中。
+1. 当下一次我们需要操作 WeakHashMap 时，会先同步内部的 table 和 ReferenceQueue，也即，删除 table 中被 GC 回收的键值对。
+
+WeakHashMap 是不同步的。
+
+### Map总结
+
+1. HashMap 是基于拉链（分离链接）法实现的散列表，一般用于单线程程序中
+1. Hashtable 也是基于拉链法实现的散列表，一般用于多线程程序中
+1. WeakHashMap 也是基于拉链法实现的散列表，它一般也用于单线程程序中
+1. TreeMap 是有序的 Map，它是通过红黑树实现的，一般用于单线程中存储有序的映射
+
+### HashSet
+
+HashSet 是一个没有重复元素的集合，它是由 HashMap 实现的，**不保证元素顺序**，并且**允许使用 null 元素**。
+
+HashSet 是非同步的，可以通过 `Collections.synchronizedSet` 方法来包装 set。
+
+### TreeSet
+
+TreeSet 是一个有序的集合，继承于 AbstractSet 类，实现了 NavigableSet, Cloneable, java.io.Serializable 接口。
+
+TreeSet 是基于 TreeMap 实现的。TreeSet 中的元素支持两种排序方式：自然排序或者根据创建 TreeSet 时提供的 Comparator 进行排序。TreeSet 为基本操作（add、remove等）提供受保证的 log (N) 时间开销。
+
+TreeSet 是非线程安全的。
+
+### Iterator 与 Enumeration 比较
+
+Enumeration 是一个接口：
+
+```java
+public interface Enumeration<E> {
+    boolean hasMoreElements();
+    E nextElement();
+}
+```
+
+Iterator 也是一个接口：
+
+```java
+public interface Iterator<E> {
+    boolean hasNext();
+    E next();
+    default void remove() {
+        throw new UnsupportedOperationException("remove");
+    }
+    default void forEachRemaining(Consumer<? super E> action) {
+        Objects.requireNonNull(action);
+        while (hasNext())
+            action.accept(next());
+    }
+}
+```
+
+他们之间主要的区别有：
+
+1. 函数接口不同
+1. Iterator 支持 fail-fast 机制，而 Enumeration 不支持
+
+Enumeration 是 JDK 1.0 添加的接口，使用它的类包括 Vector、Hashtable 等，这些类都是 JDK 1.0 中加入的，Enumeration 存在的目的就是为他们提供遍历接口。Enumeration 本身并没有支持同步，而在 Vector、Hashtable 实现 Enumeration 时，添加了同步。
+
+Iterator 是 JDK 1.2 添加的接口，它也是为了 HashMap、ArrayList 等集合提供遍历接口。Iterator 是支持 fail-fast 机制的：当多个线程对同一个集合的内容进行操作时，就可能会产生 fail-fast 事件。
+
 ## 最大子序列和
 
 给定整数 A1, A2, ..., An(可能有负数)，求 ∑(k=i, j)Ak 的最大值（为方便起见，如果所有整数均为负数，则最大子序列和为 0）
@@ -2012,3 +2239,7 @@ public static int compute(String suffix) {
     }
 }
 ```
+
+## 协议
+
+[MIT](LICENSE)
