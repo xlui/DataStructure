@@ -30,7 +30,12 @@ public class Main {
 //		BubbleSort.sort(numbers);
 //		InsertionSort.sort(numbers);
 //		ShellSort.sort(numbers);
-		HeapSort.sort(numbers);
+//		HeapSort.sort(numbers);
+//		MergeSort.sortUp2Down(numbers);
+//		MergeSort.sortDown2Up(numbers);
+//		QuickSort.sort(numbers);
+//		BucketSort.sort(numbers);
+		RadixSort.sort(numbers);
 
 		System.out.println("After sort: ");
 		NumberUtils.print(numbers);

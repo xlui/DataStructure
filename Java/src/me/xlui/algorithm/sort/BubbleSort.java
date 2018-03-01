@@ -8,6 +8,7 @@ package me.xlui.algorithm.sort;
  */
 public class BubbleSort {
 	public static void sort(int[] numbers) {
+		// 从后往前开始遍历，每次外层循环结束，i 位置（当前最后）的元素为 0 - i 中最大的元素
 		for (int i = numbers.length - 1; i > 0; i--) {
 			for (int j = 0; j < i; j++) {
 				if (numbers[j] > numbers[i]) {
