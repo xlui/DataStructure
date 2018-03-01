@@ -51,6 +51,8 @@
 1. [O(1) 时间内删除链表结点](#删除链表结点)
 1. [判断链表中是否有环](#判断链表中是否有环)
 1. [单链表转置](#单链表转置)
+1. [中缀表达式转后缀表达式](#中缀表达式转后缀表达式)
+1. [后缀表达式求值](#后缀表达式求值)
 
 ## 数组
 
@@ -1881,3 +1883,132 @@ public Node reverseByRecursion(Node head) {
 ```
 
 思路是：每次断开头结点，对剩下的结点递归调用转置函数，然后再将头结点接到转置后的链表末尾。
+
+## 中缀表达式转后缀表达式
+
+实例：
+
+`a + b * c + (d * e + f) * g` &nbsp;转换为&nbsp; `a b c * + d e * f + g * +`
+
+转换的逻辑：
+
+1. 遇到操作数，直接输出
+1. 遇到 左括号，进栈
+1. 遇到 右括号，将栈中元素弹出，直到遇到左括号为止。左括号不输出
+1. 遇到其他操作符，从栈中弹出元素直到遇到更低优先级的元素（或栈为空），然后将操作符入栈
+1. 左括号 直到遇到 右括号 的时候才弹出，遇到普通操作符不弹出
+1. 读到输入的末尾，将栈中剩余的元素依次弹出
+
+```java
+/**
+ * 入栈判断。
+ * 1、栈顶是左括号，直接入栈
+ * 2、输入是乘除，栈顶是加减，入栈
+ * 3、其他情况，栈顶元素出栈
+ */
+private static boolean compare(String input, String top) {
+    return "(".equals(top) || ("*".equals(input) || "/".equals(input)) && ("+".equals(top) || "-".equals(top));
+}
+
+public static void convert(String input) {
+    String[] strings = input.split(" ");
+    Stack<String> stack = new Stack<>();
+
+    for (String string : strings) {
+        if ("(".equals(string)) {
+            // 遇到左括号，直接入栈
+            stack.push(string);
+        } else if (")".equals(string)) {
+            // 遇到右括号，弹出元素直到弹出对应的左括号
+            String top;
+            while (!stack.isEmpty()) {
+                top = stack.pop();
+                if (top.equals("("))
+                    // 弹出了左括号，停止循环
+                    break;
+                else
+                    System.out.print(top + " ");
+            }
+        } else if ("+-*/".contains(string)) {
+            // 普通操作符
+            if (stack.isEmpty()) {
+                // 栈为空时直接入栈
+                stack.push(string);
+            } else {
+                String top = stack.peek();
+                if (compare(string, top)) {
+                    // 判断栈顶元素优先级比操作符低，直接入栈
+                    stack.push(string);
+                } else {
+                    // 栈顶元素优先级比操作符高，依次弹出
+                    while (!stack.isEmpty()) {
+                        top = stack.peek();
+                        if (!compare(string, top)) {
+                            // 先取栈顶元素进行比较，再弹出的原因是避免 左括号（ 被误弹出
+                            System.out.print(stack.pop() + " ");
+                        } else {
+                            break;
+                        }
+                    }
+                    // 现在栈顶元素的优先级比操作符低，操作符入栈
+                    stack.push(string);
+                }
+            }
+        } else {
+            // 数字，直接输出
+            System.out.print(string + " ");
+        }
+    }
+
+    // 输出栈中剩余元素
+    while (!stack.isEmpty()) {
+        System.out.print(stack.pop() + " ");
+    }
+}
+```
+
+## 后缀表达式求值
+
+直接弹出元素计算，然后重新压入栈即可。其中需要注意的一点是左右操作数的顺序：左操作数先入栈，右操作数后入栈；右操作数先出栈，左操作数后出栈。
+
+```java
+public static int compute(String suffix) {
+    String[] strings = suffix.split(" ");
+    Stack<Integer> stack = new Stack<>();
+    for (String string : strings) {
+        if (string.matches("\\d+")) {
+            stack.push(Integer.valueOf(string));
+        } else {
+            if (stack.isEmpty()) {
+                return -1;
+            }
+
+            int num1 = stack.pop();
+            int num2 = stack.pop();
+            int result = 0;
+            switch (string) {
+                // 其中 num2 和 num1 的顺序不能乱。因为中缀表达式转后缀表达式的时候，左操作数（操作符左侧）先入栈，右操作数后入栈。所以 pop 的时候右操作数先出栈，左操作数后出栈
+                case "+":
+                    result = num2 + num1;
+                    break;
+                case "-":
+                    result = num2 - num1;
+                    break;
+                case "*":
+                    result = num2 * num1;
+                    break;
+                case "/":
+                    result = num2 / num1;
+                    break;
+            }
+            stack.push(result);
+        }
+    }
+
+    if (stack.size() == 1) {
+        return stack.pop();
+    } else {
+        return -1;
+    }
+}
+```
