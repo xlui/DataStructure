@@ -25,4 +25,27 @@ public class Meal {
 			System.out.println(", Price: " + item.price());
 		}
 	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	public static class Builder {
+		private List<Item> items = new ArrayList<>();
+
+		public Builder addItem(Item item) {
+			items.add(item);
+			return this;
+		}
+
+		public Meal build() {
+			Meal meal = new Meal();
+			meal.setItems(this.items);
+			return meal;
+		}
+	}
 }
