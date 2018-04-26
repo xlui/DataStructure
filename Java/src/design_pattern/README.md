@@ -599,3 +599,5 @@
 1. 可能不容易观察运行时的特征
 
 ## 总结
+
+![Design Patterns](../../../Images/designPatterns.svg)
