@@ -2,6 +2,8 @@ package algorithm.sort;
 
 import util.NumberUtils;
 
+import java.util.Arrays;
+
 /**
  * <h1>一些概念：</h1>
  *
@@ -22,8 +24,8 @@ public class Main {
 	public static void main(String[] args) {
 		int[] numbers = NumberUtils.generate();
 
-		System.out.println("Before sort: ");
-		NumberUtils.print(numbers);
+//		System.out.println("Before sort: ");
+//		NumberUtils.print(numbers);
 
 		// sort
 //		SelectionSort.sort(numbers);
@@ -35,9 +37,12 @@ public class Main {
 //		MergeSort.sortDown2Up(numbers);
 //		QuickSort.sort(numbers);
 //		BucketSort.sort(numbers);
-		RadixSort.sort(numbers);
+//		RadixSort.sort(numbers);
+		int[] input = {100, 3, 2, 1};
+		QuickSort.sort(input);
+		System.out.println(Arrays.toString(input));
 
-		System.out.println("After sort: ");
-		NumberUtils.print(numbers);
+//		System.out.println("After sort: ");
+//		NumberUtils.print(numbers);
 	}
 }
