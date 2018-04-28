@@ -39,8 +39,9 @@ public class Main {
 //		BucketSort.sort(numbers);
 //		RadixSort.sort(numbers);
 		int[] input = {100, 3, 2, 1};
+		System.out.println("Before:\n" + Arrays.toString(input));
 		QuickSort.sort(input);
-		System.out.println(Arrays.toString(input));
+		System.out.println("After:\n" + Arrays.toString(input));
 
 //		System.out.println("After sort: ");
 //		NumberUtils.print(numbers);
