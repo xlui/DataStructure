@@ -4,7 +4,7 @@
 
 ## 目录
 
-数据结构：
+### 数据结构：
 
 1. [数组](#数组)
 1. [链表](#链表)
@@ -27,7 +27,7 @@
 1. [图](#图)
 1. [容器](#容器)
 
-五大常用算法：
+### 五大常用算法：
 
 1. [分治算法](#分治算法)
 1. [动态规划](#动态规划)
@@ -35,7 +35,7 @@
 1. [回溯法](#回溯法)
 1. [分支限界法](#分支限界法)
 
-算法：
+### 算法：
 
 1. [最大子序列和](#最大子序列和)
 1. [二分查找](#二分查找)
@@ -51,7 +51,7 @@
 1. [基数排序](#基数排序)
 1. [散列](#散列)
 
-设计模式：
+### 设计模式：
 
 > 创建型模式：
 
@@ -89,7 +89,7 @@
 
 1. [总结](#总结)
 
-一些问题：
+### 一些算法问题：
 
 1. [O(1) 时间内删除链表结点](#删除链表结点)
 1. [判断链表中是否有环](#判断链表中是否有环)
@@ -97,7 +97,7 @@
 1. [中缀表达式转后缀表达式](#中缀表达式转后缀表达式)
 1. [后缀表达式求值](#后缀表达式求值)
 
-协议：
+### 协议：
 
 [MIT](LICENSE)
 
@@ -105,7 +105,7 @@
 
 数组的特点是：**数据是连续的，随机访问速度很快**
 
-但是插入删除涉及到元素的移动，开销较大。
+缺点是：插入删除涉及到元素位置的移动，开销较大；如果设计为自动扩容的数组，当剩余空间不足时，需要重新申请空间。
 
 ## 链表
 
@@ -117,7 +117,9 @@
 
 ## 双向链表
 
-双向链表（双链表）是链表的一种。和单链表一样，双链表也是由结点组成，它的每个结点中有两个指针，分别指向**直接后继**和**直接前驱**。
+双向链表（双链表）是链表的一种。和单链表一样，双链表也是由结点组成，不过它的每个结点中有两个指针，分别指向**直接后继结点**和**直接前驱结点**。
+
+Java 中 LinkedList 的实现是双向链表。
 
 ## 循环链表
 
@@ -127,14 +129,14 @@
 
 栈是一种线性存储结构，它有以下几个特点：
 
-1. 栈中数据按照“后进先出”（LIFO, Last In First Out）的方式进出栈。
+1. 栈中数据按照“**后进先出**”（LIFO, Last In First Out）的方式进出栈。
 1. 向栈中添加/删除数据时，只能从栈顶进行操作。
 
 栈通常包括三种操作：`push`、`peek`、`pop`：
 
-- push —— 向栈中添加元素
-- peek —— 返回栈顶元素
-- pop —— 返回并删除栈顶元素
+- push: 向栈中添加元素
+- peek: 返回栈顶元素
+- pop: 返回并删除栈顶元素
 
 栈的实现可以通过数组也可以通过链表，数组实现有空间限制，而链表实现没有。
 
@@ -142,20 +144,24 @@
 
 队列也是一种线性存储结构，它有以下几个特点：
 
-1. 队列中的数据按照“先进先出”（FIFO, First In First Out）的方式进出队列。
+1. 队列中的数据按照“**先进先出**”（FIFO, First In First Out）的方式进出队列。
 1. 队列只允许在队首进行删除操作，在队尾进行插入操作。
 
 队列通常包括三种操作：`add`、`peek`、`poll`：
 
-- add —— 向队列中添加元素
-- peek —— 返回队首元素
-- poll —— 返回并删除队首元素
+- add: 向队列中添加元素
+- peek: 返回队首元素
+- poll: 返回并删除队首元素
 
 队列也可以通过数组、链表实现。
 
 ## 二叉树
 
+### 定义
+
 二叉树T：一个有穷的结点集合。这个集合**可以为空**。若不为空，则它是由**根结点**和称为**左子树TL**和**右子树TR**的两个不相交的二叉树组成。
+
+### 性质
 
 二叉树有几个重要的性质：
 
@@ -173,13 +179,19 @@
 
 得：`n0 = n2 + 1`
 
+### 操作
+
 二叉树通常包括几种操作：前序遍历、中序遍历、后序遍历、层次遍历。
+
+有一个结论：
 
 > 在任何一次遍历过程中，对于某一个结点总会访问三次。前序遍历就是在第一次访问的时候输出结点中信息，中序遍历则是在第二次访问的时候输出，后序遍历是在第三次访问的时候进行输出。
 
 前序遍历和中序遍历也可以利用**栈**来进行非递归遍历，后序遍历的非递归实现比较复杂。
 
 层次遍历利用**队列**实现，每次从队列中取出一个结点访问，然后将该结点的左右儿子（非空）放入队列。
+
+### 问题
 
 问题1：输出二叉树的叶结点
 
@@ -209,17 +221,17 @@ private int height(Node node) {
 
 ## 完全二叉树
 
-完全二叉树是：有 n 个结点的二叉树，对树中结点按从上至下、从左到右的顺序进行编号，编号为 i（1 <= i <= n）结点与满二叉树中编号为 i 结点在二叉树中位置相同。
+完全二叉树：有 n 个结点的二叉树，对树中结点按从上至下、从左到右的顺序进行编号，编号为 i（1 <= i <= n）结点与满二叉树中编号为 i 结点在二叉树中位置相同。
 
 完全二叉树有以下几个重要的性质：
 
-1. 非根结点（序号 i > 1）的 父结点 的序号是 [i/2] (向下取整)
+1. 非根结点（序号 i > 1）的父结点的序号是 [i/2] (向下取整)
 1. 结点 i 的左孩子的序号是 2i。如果 2i > n，则没有左孩子
 1. 结点 i 的右孩子的序号是 2i+1。如果 2i+1 > n，则没有右孩子
 
 ## 二叉搜索树
 
-二叉搜索树是特殊的二叉树：对于二叉树，假设 x 为二叉树中任意一个结点，x 结点包含关键字 key，结点 x 的 key 值记为 key[x]。如果 y 是 x 的左子树中的一个结点，则 key[y] <= key[x]；如果 y 是 x 右子树的一个结点，则 key[y] >= key[x]。那么，这棵树就是二叉搜索树。
+二叉搜索树（Binary Search Tree）是特殊的二叉树：对于二叉树，假设 x 为二叉树中任意一个结点，x 结点包含关键字 key，结点 x 的 key 值记为 key[x]。如果 y 是 x 的左子树中的一个结点，则 key[y] <= key[x]；如果 y 是 x 右子树的一个结点，则 key[y] >= key[x]。那么，这棵树就是二叉搜索树。
 
 在二叉搜索树中：
 
@@ -229,6 +241,114 @@ private int height(Node node) {
 1. 没有键值相等的结点
 
 二叉搜索树常用的操作有：插入、删除、查找、查找最大值、查找最小值。
+
+### 插入
+
+```java
+public void insert(E element) {
+    this.root = this.insert(this.root, element);
+}
+
+private Node insert(Node node, E element) {
+    if (node == null) {
+        // 结点为空，创建并插入数据
+        node = new Node();
+        node.data = element;
+    } else {
+        if (element.compareTo(node.data) > 0)
+            node.right = insert(node.right, element);
+        else if (element.compareTo(node.data) < 0)
+            node.left = insert(node.left, element);
+    }
+    return node;
+}
+```
+
+### 删除
+
+```java
+public boolean delete(E element) {
+    try {
+        this.root = this.delete(this.root, element);
+        return true;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+/**
+    * 分三种情况：
+    * 1、删除的结点是叶子节点。将其父结点的指针为 null
+    * 2、删除的结点只有一个儿子。将其父结点的指针指向要删除结点的儿子结点
+    * 3、删除的结点有两个儿子。用右子树的 最小元素 或者左子树的 最大元素 替代要删除的结点
+    */
+private Node delete(Node node, E element) throws Exception {
+    if (node == null) {
+        throw new Exception("Not Found!");
+    } else if (element.compareTo(node.data) < 0) {
+        node.left = delete(node.left, element);
+    } else if (element.compareTo(node.data) > 0) {
+        node.right = delete(node.right, element);
+    } else {
+        if (node.left != null && node.right != null) {
+            // 要删除的结点有两个儿子结点
+            Node tmp = findMin(node.right);    // 找到右子树的最小结点
+            node.data = tmp.data;
+            node.right = delete(node.right, (E) node.data);
+        } else {
+            node = (node.left != null) ? node.left : node.right;
+        }
+        /*
+        if (node.left != null) {
+            // 要删除的结点有左儿子结点
+            node = node.left;
+        } else if (node.right != null) {
+            // 要删除的结点有右儿子结点
+            node = node.right;
+        } else {
+            // 要删除的结点没有儿子结点
+            node = null;
+        }
+        */
+    }
+
+    return node;
+}
+```
+
+### 查找
+
+```java
+/**
+    * 递归实现查找
+    */
+private Node find(Node node, E element) {
+    if (node == null)
+        return null;
+    if (element.compareTo(node.data) > 0)
+        return find(node.right, element);
+    else if (element.compareTo(node.data) < 0)
+        return find(node.left, element);
+    else
+        return node;
+}
+
+/**
+    * 迭代实现查找
+    */
+private Node findIter(Node node, E element) {
+    while (node != null) {
+        if (element.compareTo(node.data) > 0)
+            node = node.right;
+        else if (element.compareTo(node.data) < 0)
+            node = node.left;
+        else
+            return node;
+    }
+    return null;
+}
+```
 
 ## AVL树
 
@@ -249,6 +369,11 @@ private int height(Node node) {
 ```
 
 AVL 树中主要涉及到了四种旋转：LL旋转（右旋）、RR旋转（左旋）、LR旋转（先左旋，再右旋）、RL旋转（先右旋，再左旋）。
+
+1. LL 即左子树的左子结点导致失衡，需要右旋恢复平衡
+1. RR 即右子树的右子结点导致失衡，需要左旋恢复平衡
+1. LR 即左子树的右子结点导致失衡，需要先左旋成为 LL 失衡，再右旋恢复平衡
+1. RL 即右子树的左子结点导致失衡，需要先右旋成为 RR 失衡，再左旋恢复平衡
 
 RR旋转（左旋）：
 
@@ -305,6 +430,103 @@ private Node rightLeftRotation(Node node) {
 }
 ```
 
+### AVL 插入
+
+```java
+public void insert(E element) {
+    this.root = this.insert(this.root, element);
+}
+
+private Node insert(Node node, E element) {
+    if (node == null) {
+        node = new Node(element);
+    } else {
+        if (element.compareTo(node.data) < 0) {
+            node.left = insert(node.left, element);
+            // 检测在左子树插入节点后，AVL 树是否失去平衡
+            if (height(node.left) - height(node.right) == 2) {
+                if (element.compareTo(node.left.data) < 0) {
+                    // 说明插入的位置是左儿子的左子节点，需要进行 LL 旋转
+                    node = this.leftLeftRotation(node);
+                } else {
+                    // 说明插入的位置是右儿子的右子节点，需要进行 LR 旋转
+                    node = this.leftRightRotation(node);
+                }
+            }
+        } else if (element.compareTo(node.data) > 0) {
+            node.right = insert(node.right, element);
+            // 检测在右子树插入节点后，AVL 树是否失去平衡
+            if (height(node.right) - height(node.left) == 2) {
+                if (element.compareTo(node.right.data) > 0) {
+                    // 说明插入位置是右儿子的右子节点，需要进行 RR 旋转
+                    node = rightRightRotation(node);
+                } else {
+                    // 说明插入位置是右儿子的左子节点，需要进行 RL 旋转
+                    node = rightLeftRotation(node);
+                }
+            }
+        }
+        // 忽略相同结点
+    }
+    // 重新计算 height
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    return node;
+}
+```
+
+### AVL 删除
+
+```java
+public void remove(E element) throws Exception {
+    this.root = this.remove(this.root, element);
+}
+
+private Node remove(Node node, E element) throws Exception {
+    if (node == null) {
+        return null;
+    }
+    if (element.compareTo(node.data) < 0) {
+        node.left = this.remove(node.left, element);
+        // 删除左子树结点，可能导致 AVL 失衡。需要根据情况进行右旋
+        if (height(node.right) - height(node.left) == 2) {
+            if (height(node.right.left) > height(node.right.right)) {
+                // 这一层判断是为了选择要进行的旋转。如果 右子树的左子树的高度 高于 右子树的右子树的高度，则进行 RL 旋转
+                node = rightLeftRotation(node);
+            } else {
+                // 否则，即 右子树的右子树 高于或者等于 右子树的左子树，则进行 RR 旋转
+                node = rightRightRotation(node);
+            }
+        }
+    } else if (element.compareTo(node.data) > 0) {
+        node.right = this.remove(node.right, element);
+        // 删除右子树结点，可能导致 AVL 失衡。需要根据情况进行左旋
+        if (height(node.left) - height(node.right) == 2) {
+            if (height(node.left.left) >= height(node.left.right)) {
+                // 这一层判断是为了选择要进行的旋转。如果 左子树的左子树的高度 高于或等于 左子树的右子树的高度，则进行 LL 旋转
+                node = leftLeftRotation(node);
+            } else {
+                // 否则，即 左子树的右子树 高于 左子树的左子树，则进行 LR 旋转
+                node = leftRightRotation(node);
+            }
+        }
+    } else {
+        // 删除结点
+        if (node.left != null && node.right != null) {
+            if (height(node.left) > height(node.right)) {
+                node.data = findMax(node.left);
+                node.left = remove(node.left, (E) node.data);
+            } else {
+                node.data = findMin(node.right);
+                node.right = remove(node.right, (E) node.data);
+            }
+        } else {
+            node = (node.left != null) ? node.left : node.right;
+        }
+    }
+    return node;
+}
+```
+
 ## 伸展树
 
 伸展树是特殊的二叉搜索树。它的特殊之处在于：当某个结点被访问时，伸展树会通过旋转使该结点成为树根。
@@ -315,11 +537,11 @@ private Node rightLeftRotation(Node node) {
 
 ```java
 /**
-    * 算法思想参考了《数据结构与算法分析 —— C语言描述》中伸展树自底向上展开
-    * 以下注释中，
-    * <strong>根结点</strong>指的是调用 splay 时传入的 node 结点
-    * <strong>目标结点</strong>是程序中调用 splay 函数的语句返回的结点
-    */
+  * 算法思想参考了《数据结构与算法分析 —— C语言描述》中伸展树自底向上展开
+  * 以下注释中，
+  * <strong>根结点</strong>指的是调用 splay 时传入的 node 结点
+  * <strong>目标结点</strong>是程序中调用 splay 函数的语句返回的结点
+  */
 private Node splay(Node node, E key) {
     if (node == null) {
         // 如果结点为空，返回 null
@@ -445,7 +667,7 @@ Red-Black Tree，又称红黑树，是一种特殊的二叉搜索树。红黑树
 
 着色法则的一个推论是，红黑树的高度最多为 2log(N + 1)。因此，查找保证是一种对数的操作。事实上，最红黑树的操作在最坏情况下花费 O(logN) 时间。
 
-红黑树的应用比较广泛，主要是用它来存储有序的数据，它的时间复杂度是 O(logN)，效率非常之高。例如，Java集合中的 TreeSet 和 TreeMap，C++ STL 中的 set、map，以及 Linux 虚拟内存的管理，都是通过红黑树去实现的。
+红黑树的应用比较广泛，主要是用它来存储有序的数据，它的时间复杂度是 O(logN)，效率非常之高。例如，Java集合中的 TreeSet 和 TreeMap，C++ STL 中的 set、map，以及 Linux 虚拟内存的管理，都是通过红黑树实现的。
 
 红黑树实现起来太复杂了，容后再做 :cry:
 
@@ -479,6 +701,8 @@ Red-Black Tree，又称红黑树，是一种特殊的二叉搜索树。红黑树
 最大堆的添加：
 
 ```java
+private List<T> heap;
+
 public void add(T t) {
     this.heap.add(t);
 
@@ -505,6 +729,8 @@ public void add(T t) {
 最大堆删除元素：
 
 ```java
+private List<T> heap;
+
 public void remove(T t) {
     if (this.heap.isEmpty()) {
         // 堆为空，返回
@@ -1100,22 +1326,43 @@ public void Prim(int start) {
 
 Collection 是一个接口，是高度抽象出来的集合，它包括了集合的基本操作和属性。
 
+```java
+package java.util;
+public interface Collection<E> extends Iterable<E> {
+    int size();
+    boolean isEmpty();
+    boolean contains(Object o);
+    Iterator<E> iterator();
+    Object[] toArray();
+    <T> T[] toArray(T[] a);
+    boolean add(E e);
+    boolean remove(Object o);
+    boolean containsAll(Collection<?> c);
+    boolean addAll(Collection<? extends E> c);
+    boolean removeAll(Collection<?> c);
+    boolean retainAll(Collection<?> c);
+    void clear();
+    boolean equals(Object o);
+    int hashCode();
+}
+```
+
 Collection 包括了 List 和 Set 两大分支：
 
-1. List 是一个有序的序列，每一个元素都有它的索引。List 的实现类有 LinkedList，ArrayList，Vector，Stack
+1. List 是有序的序列，每一个元素都有它的索引。List 的实现类有 LinkedList，ArrayList，Vector，Stack
 1. Set 是一个不允许有重复元素的集合。Set 的实现类有 HashSet 和 TreeSet。HashSet 依赖于 HashMap，它实际上通过 HashMap 实现；TreeSet 依赖与 TreeMap，它实际上通过 TreeMap 实现。
 
 ### Map
 
 Map 是一个映射接口，即 key-value 键值对。Map 中的每一个元素包含 “一个 key” 和 “key 对应的 value”。
 
-AbstractMap 是一个抽象类，它实现了 Map 接口中的大部分 API。而 HashMap，TreeMap，WeakHashMap 都是继承于 AbstractMap。
+AbstractMap 是一个抽象类，它实现了 Map 接口中的大部分 API。而 HashMap，TreeMap，WeakHashMap 等都是继承于 AbstractMap。
 
-HashTable 虽然继承于 Dictionary，但它实现了 Map 接口。
+Hashtable 虽然继承于 Dictionary，但它实现了 Map 接口。
 
 ### Iterator
 
-Iterator 是遍历集合的工具，即我们通常通过 Iterator 迭代器来遍历集合。Collection 依赖于 Iterator，所有 Collection 的实现类都要实现 iterator() 函数，返回一个 Iterator 对象。
+Iterator 是遍历集合的工具，即我们通常通过 Iterator 迭代器来遍历集合。Collection 继承于 Iterable，所有 Collection 的实现类都要实现 iterator() 函数，返回一个 Iterator 对象。
 
 ListIterator 是专门为遍历 List 而存在的。
 
@@ -1125,7 +1372,7 @@ Enumeration 的作用和 Iterator 一样，也是遍历集合。但是 Enumerati
 
 ### Arrays 和 Collections
 
-Arrays 和 Collections 是用来操作数组、集合的两个工具类。
+Arrays 和 Collections 是用来操作数组、集合的两个工具类。提供了非常多方便的函数。
 
 ### List
 
@@ -1137,9 +1384,9 @@ Set 是数学概念中的集合，Set 中没有重复元素。
 
 ### ArrayList
 
-ArrayList 是一个数组队列，相当于**动态数组**。与 Java 中的数组相比，它的容量能动态增长，初始值为 **10**。它继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 这些接口。
+ArrayList 是一个数组实现的 List，是**动态数组**。与 Java 中的数组相比，它的容量能动态增长，初始值为 **10**。它继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 这些接口。
 
-和 Vector 不同，**ArrayList 的操作不是线程安全的**！所以，建议在单线程中才使用 ArrayList，而在多线程中可以选择 Vector 或者 CopyOnWriteArrayList。
+和 Vector 不同，**ArrayList 的操作不是同步的**！所以，建议在单线程中才使用 ArrayList，而在多线程中可以选择 Vector 或者 CopyOnWriteArrayList。
 
 当 ArrayList 的容量不足以容纳全部元素时，ArrayList 会重新设置容量(扩大三倍)：
 
@@ -1151,7 +1398,7 @@ int newCapacity = oldCapacity + (oldCapacity >> 1);
 
 fail-fast 是 Java 集合（Collection）中的一种错误机制。当多个线程对同一集合的内容进行操作时，就可能产生 fail-fast 事件。
 
-例如：当某一个线程A通过iterator去遍历某集合的过程中，若该集合的内容被其他线程所改变了；那么线程A访问集合时，就会抛出ConcurrentModificationException 异常，产生 fail-fast 事件。
+例如：当某一个线程A通过iterator去遍历某集合的过程中，若该集合的内容被其他线程所改变了；那么线程A访问集合时，就会抛出 `ConcurrentModificationException` 异常，产生 fail-fast 事件。
 
 ArrayList 每次调用 next() 和 remove() 等方法时，都会执行 checkForComodification()：
 
@@ -1160,9 +1407,9 @@ if (expectedModCount != ArrayList.this.modCount)
     throw new ConcurrentModificationException();
 ```
 
-如果 modCount 不等于 expectedModCount，则抛出 ConcurrentModificationException 异常，产生 fail-fast 事件。
+如果 modCount 不等于 expectedModCount，则抛出 `ConcurrentModificationException` 异常，产生 fail-fast 事件。
 
-而 `java.util.concurrent.CopyOnWriteArrayList` 则使用了 volatile 关键字保证内存一致性。
+而 `java.util.concurrent.CopyOnWriteArrayList` 则使用了 volatile 关键字保证内存一致性。CopyOnWriteArrayList 通过在写的时候将原数组的内容拷贝到新数组进行写，写操作完成时，将原数组的引用指向新数组。为了避买并发写时出现多份不同数据，CopyOnWriteArrayList 的整个 add 操作都是在 ReentrantLock 锁的保护下进行的。而对于读不作限制。CopyOnWriteArrayList 保证了数据的最终一致性，而不保证实时读（即写操作完成后读取到的数据不一定是最新的数据，因为还需要更改引用指向）。
 
 fail-fast 机制，是一种错误检测机制。它只能被用来检测错误，因为 JDK 并不保证 fail-fast 机制一定会发生。若在多线程环境下使用 fail-fast 机制的集合，建议使用 `java.util.concurrent` 包下的类去取代 `java.util` 包下的类。
 
@@ -1178,7 +1425,7 @@ LinkedList 实际上是通过双向链表实现的，它包含一个非常重要
 
 Vector 是矢量队列，继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 接口。
 
-和 ArrayList 不同，Vector 中的操作是线程安全的。
+和 ArrayList 不同，Vector 中的操作是**同步**（单线程低效）的。
 
 Vector 默认容量大小为 10。
 
@@ -1193,7 +1440,7 @@ capacityIncrement : oldCapacity);
 
 Stack 是栈，它的特性是：**先进后出(FILO, First In Last Out)**
 
-Stack 继承于 Vector 的，而 Vector 是通过数组实现的，这就意味着，**Stack 也是通过数组实现的，而非链表**。当然，我们也可以把 LinkedList 当作栈来使用。
+**Stack 继承于 Vector**（非常愚蠢的设计），而 Vector 是通过数组实现的，这就意味着，**Stack 也是通过数组实现的，而非链表**。当然，我们也可以把 LinkedList 当作栈来使用（推荐）。
 
 ### List 总结
 
@@ -1216,13 +1463,15 @@ HashMap 中的映射不是有序的。
 
 HashMap 中有两个参数影响其性能：**初始容量**和**加载因子**。初始容量是哈希表在创建时的容量。加载因子是哈希表在其容量自动增加之前可以达到多满的一种尺度。通常，**默认的加载因子是 0.75**
 
+在 jdk1.8 HashMap 在某一个表项的结点数到达 8 的时候会将该链表转换为红黑树。
+
 ### Hashtable
 
 和 HashMap 一样，Hashtable 也是一个散列表，它存储的内容是键值对（key-value）映射。
 
 Hashtable 继承于 Dictionary，实现了 Map, Cloneable, java.io.Serializable 接口。
 
-Hashtable 的函数都是同步的，这意味着它是线程安全的。
+Hashtable 的函数都是同步的，这意味着它是线程安全的（单线程低效）。
 
 Hashtable 的 key、value 都不可以为 null。
 
@@ -1236,9 +1485,9 @@ TreeMap 是一个有序的 key-value 集合，它的内部是通过**红黑树**
 
 TreeMap 继承于 AbstractMap，实现了 NavigableMap, Cloneable, java.io.Serializable 接口。实现 NavigableMap 意味着它支持一系列的导航方法。
 
-TreeMap 是基于**红黑树（Red-Black Tree）**实现。该映射根据其**键的自然顺序**进行排序，或者根据**创建映射时提供的 Comparator 进行排序**。
+TreeMap 是基于**红黑树**实现的。该映射根据其**键的自然顺序**进行排序，或者根据**创建映射时提供的 Comparator 进行排序**。
 
-TreeMap 是非同步的。
+TreeMap 是非同步的。多线程情况下考虑 ConcurrentHashMap，它利用分段锁来保证安全的高并发访问。
 
 ### WeakHashMap
 
@@ -1259,7 +1508,7 @@ WeakHashMap 是不同步的。
 ### Map总结
 
 1. HashMap 是基于拉链（分离链接）法实现的散列表，一般用于单线程程序中
-1. Hashtable 也是基于拉链法实现的散列表，一般用于多线程程序中
+1. Hashtable 也是基于拉链法实现的散列表（任何时候不建议使用）
 1. WeakHashMap 也是基于拉链法实现的散列表，它一般也用于单线程程序中
 1. TreeMap 是有序的 Map，它是通过红黑树实现的，一般用于单线程中存储有序的映射
 
@@ -1932,24 +2181,30 @@ private static void sort(int[] numbers, int left, int right) {
     if (left < right) {
         int i = left, j = right;
         int pivot = pivot(numbers, left, right);
-        while (i < j) {
-            // 从右向左找第一个小于 pivot 的数
-            while (i < j && numbers[j] > pivot)
-                j--;
-            // 交换到 left 的位置
-            if (i < j)
-                numbers[i++] = numbers[j];
+        while (true) {
             // 从左往右找第一个大于 pivot 的数
-            while (i < j && numbers[i] < pivot)
+            while (numbers[i] < numbers[pivot])
                 i++;
-            // 交换到 j 的位置
-            if (i < j)
-                numbers[j--] = numbers[i];
+            // 从右向左找第一个小于 pivot 的数
+            while (numbers[j] > numbers[pivot])
+                j--;
+            if (i < j) {
+                // 找到且符合条件，交换两元素
+                swap(numbers, i, j);
+            } else {
+                break;
+            }
         }
-        numbers[i] = pivot;
+        swap(numbers, i, pivot);
         sort(numbers, left, i - 1);
         sort(numbers, i + 1, right);
     }
+}
+
+private static void swap(int[] nums, int i, int j) {
+    int tmp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = tmp;
 }
 
 // 获取头、中、尾的中位数
