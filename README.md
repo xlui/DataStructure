@@ -2928,7 +2928,7 @@ di 决定了不同的解决方案：线性探测、平方探测、双散列
 
 ## 总结
 
-![Design Patterns](../../../Images/designPatterns.svg)
+![Design Patterns](Images/designPatterns.svg)
 
 ## 删除链表结点
 
