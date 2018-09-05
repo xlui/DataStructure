@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 public class Main {
 	public static void main(String[] args) {
-		int[] numbers = NumberUtils.generate();
+		int[] numbers = NumberUtils.generate(10, 100);
 
 //		System.out.println("Before sort: ");
 //		NumberUtils.print(numbers);

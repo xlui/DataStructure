@@ -1,14 +1,13 @@
 package util;
 
-public class NumberUtils {
-	private static final int COUNT = 10;
-	private static final int RANGE = 100;
-	private static int tmp = 0;
+import java.util.Random;
 
-	public static int[] generate() {
-		int[] res = new int[COUNT];
-		for (int i = 0; i < COUNT; i++) {
-			res[i] = 1 + (int) (Math.random() * RANGE);
+public class NumberUtils {
+	public static int[] generate(int count, int range) {
+		Random random = new Random();
+		int[] res = new int[count];
+		for (int i = 0; i < count; i++) {
+			res[i] = 1 + random.nextInt(range);
 		}
 		return res;
 	}
@@ -21,8 +20,13 @@ public class NumberUtils {
 	}
 
 	public static void swap(int[] numbers, int i, int j) {
-		tmp = numbers[i];
+		int tmp = numbers[i];
 		numbers[i] = numbers[j];
 		numbers[j] = tmp;
+	}
+
+	public static void main(String[] args) {
+		int[] numbers = NumberUtils.generate(10, 100);
+		NumberUtils.print(numbers);
 	}
 }
