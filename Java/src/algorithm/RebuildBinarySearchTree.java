@@ -59,6 +59,17 @@ public class RebuildBinarySearchTree {
 		return root;
 	}
 
+	// 从数组构建二叉树
+	private Node fromArray(int[] tree, int index) {
+		Node root = null;
+		if (index < tree.length) {
+			root = new Node(tree[index]);
+			root.left = fromArray(tree, 2 * index + 1);
+			root.right = fromArray(tree, 2 * index + 2);
+		}
+		return root;
+	}
+
 	public static void main(String[] args) {
 		RebuildBinarySearchTree rbst = new RebuildBinarySearchTree();
 		/*
@@ -71,7 +82,8 @@ public class RebuildBinarySearchTree {
 		int[] post = {8, -4, -2, 7, 5, 6, 10};
 		int[] tree = {10, -2, 6, 8, -4, 7, 5};
 //		Node root = rbst.fromPreIn(pre, 0, pre.length - 1, in, 0, in.length - 1);
-		Node root = rbst.fromPostIn(post, 0, post.length - 1, in, 0, in.length - 1);
+//		Node root = rbst.fromPostIn(post, 0, post.length - 1, in, 0, in.length - 1);
+		Node root = rbst.fromArray(tree, 0);
 		output(root);
 	}
 
