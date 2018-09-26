@@ -31,6 +31,34 @@ public class RebuildBinarySearchTree {
 		return root;
 	}
 
+	// 从后序遍历、中序遍历数组构建二叉树
+	private Node fromPostIn(int[] post, int beginPost, int endPost, int[] in, int beginIn, int endIn) {
+		Node root = new Node(post[endPost]);
+		if (beginPost == endPost) {
+			if (beginIn == endIn && post[beginPost] == in[beginIn]) {
+				return root;
+			} else {
+				throw new RuntimeException("Invalid input!");
+			}
+		}
+
+		int rootIndex = beginIn;
+		while (rootIndex <= endIn && in[rootIndex] != root.value)
+			rootIndex++;
+		if (rootIndex == endIn && in[rootIndex] != root.value)
+			throw new RuntimeException("Invalid input!");
+
+		int rightSubtreeLength = endIn - rootIndex;
+		int rightPostOrderStart = endPost - rightSubtreeLength;
+		if (rightSubtreeLength > 0) {
+			root.right = fromPostIn(post, rightPostOrderStart, endPost - 1, in, rootIndex + 1, endIn);
+		}
+		if (rightSubtreeLength < endPost - beginPost) {
+			root.left = fromPostIn(post, beginPost, rightPostOrderStart - 1, in, beginIn, rootIndex - 1);
+		}
+		return root;
+	}
+
 	public static void main(String[] args) {
 		RebuildBinarySearchTree rbst = new RebuildBinarySearchTree();
 		/*
@@ -42,7 +70,8 @@ public class RebuildBinarySearchTree {
 		int[] in = {8, -2, -4, 10, 7, 6, 5};
 		int[] post = {8, -4, -2, 7, 5, 6, 10};
 		int[] tree = {10, -2, 6, 8, -4, 7, 5};
-		Node root = rbst.fromPreIn(pre, 0, pre.length - 1, in, 0, in.length - 1);
+//		Node root = rbst.fromPreIn(pre, 0, pre.length - 1, in, 0, in.length - 1);
+		Node root = rbst.fromPostIn(post, 0, post.length - 1, in, 0, in.length - 1);
 		output(root);
 	}
 
